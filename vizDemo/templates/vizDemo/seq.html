@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Levels of Activity</title>
+</head>
+<body>
+<div style="display: flex; flex-direction: row">
+{% for event in events %}
+<p>{{ event.type }}</p>
+{% endfor %}
+</div>
+</body>
+</html>
