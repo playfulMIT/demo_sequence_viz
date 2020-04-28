@@ -1,18 +1,25 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Levels of Activity</title>
+    <script src="/static/bokeh.js"></script>
+
+{{ script | safe }}
 </head>
 <body>
 <form action="" >{{ playerForm }}
 <button value="submit">Change Player</button></form>
-<div style="display: flex; flex-direction: row">
+{{ div|safe }}
+
+<!-- <div style="display: flex; flex-direction: row">
 
 {% for event in events %}
 
     {% ifchanged %}{{ event.data.user }}: {% endifchanged %}{{ event.type }} - {{ event.data.timeStamp }}
 {% endfor %}
-</div>
+
+</div>-->
 </body>
 </html>
