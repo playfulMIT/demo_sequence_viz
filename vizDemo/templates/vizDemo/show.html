@@ -6,8 +6,11 @@
 </head>
 <body>
 {{ levels }}
-{% for object in levels %}
-<p>{{ object }}</p>
-{% endfor %}
+    {% for object in levels %}
+        <p>{{ object.data }}{{ object }}</p>
+            {% for key,value in object.data %}
+                {{ key }}, {{ value }}
+            {% endfor %}
+    {% endfor %}
 </body>
 </html>

@@ -38,8 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'vizDemo.apps.VizdemoConfig',
-    'shadowspect',
-    'datacollection',
 ]
 
 MIDDLEWARE = [
@@ -79,8 +77,8 @@ WSGI_APPLICATION = 'djangoHackViz.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dataViz',
-        'USER': 'postgres',
+        'NAME': 'dataviz',
+        'USER': 'liamhunt',
         'PASSWORD': '2008NeuDM',
     }
 }

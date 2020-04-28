@@ -5,9 +5,13 @@
     <title>Levels of Activity</title>
 </head>
 <body>
+<form action="" >{{ playerForm }}
+<button value="submit">Change Player</button></form>
 <div style="display: flex; flex-direction: row">
+
 {% for event in events %}
-<p>{{ event.type }}</p>
+
+    {% ifchanged %}{{ event.data.user }}: {% endifchanged %}{{ event.type }} - {{ event.data.timeStamp }}
 {% endfor %}
 </div>
 </body>

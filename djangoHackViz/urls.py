@@ -23,7 +23,5 @@ from django.views.static import serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('datacollection.urls')),
-    path('', include('shadowspect.urls')),
     path('vizDemo/', include('vizDemo.urls')),
 ]
