@@ -1,1 +1,1 @@
-web: gunicorn demo_sequence_viz.wsgi --log-file -
+web: gunicorn djangoHackViz.wsgi --log-file -
