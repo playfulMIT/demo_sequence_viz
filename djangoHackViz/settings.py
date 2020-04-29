@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'djangoHackViz.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'dataviz',
         'USER': 'liamhunt',
         'PASSWORD': '2008NeuDM',
