@@ -2,7 +2,9 @@ asgiref==3.2.6
 bokeh==2.0.2
 certifi==2019.11.28
 chardet==3.0.4
+dj-database-url==0.5.0
 Django==3.0.4
+django-heroku==0.3.1
 gunicorn==20.0.4
 idna==2.9
 Jinja2==2.11.1
@@ -21,3 +23,4 @@ sqlparse==0.3.1
 tornado==6.0.4
 typing-extensions==3.7.4.1
 urllib3==1.25.8
+whitenoise==5.0.1
