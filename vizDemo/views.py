@@ -63,22 +63,22 @@ class Seq(ListView):
         #    timeStamps['eventType'].append(event.type)
                 # timeStamps['puzzle'].append(event.data['task_id'])
         cmap = {
-            'ws-move_shape': '#000003',
+            'ws-move_shape': '#691C80',
             'ws-click_disabled': '#07051B',
             'ws-deselect_shape': '#150E38',
             'ws-rotate_view': '#281159',
             'ws-exit_to_menu': '#3E0F72',
             'ws-undo_action': '#55137D',
             'ws-scale_shape': '#691C80',
-            'ws-select_shape': '#7E2481',
+            'ws-select_shape': '#691C80',
             'ws-mode_change': '#942B80',
             'ws-puzzle_started': '#A9327C',
             'ws-start_level': '#C03A75',
             'ws-click_nothing': '#D4436D',
             'ws-delete_shape': '#E75262',
             'ws-check_solution': '#F3675B',
-            'ws-create_shape': '#FA7F5E',
-            'ws-rotate_shape': '#FD9969',
+            'ws-create_shape': '#691C80',
+            'ws-rotate_shape': '#691C80',
             'ws-disconnect': '#FEB179',
             'ws-puzzle_complete': '#FECB8E',
             'ws-snapshot': '#FCE3A5',
@@ -92,7 +92,7 @@ class Seq(ListView):
             'ws-start_game': '#EE5B5E',
             'ws-login_user': '#912A80',
             'ws-create_user': '#AE347B',
-            'ws-select_shape_add': '#20114D',
+            'ws-select_shape_add': '#691C80',
         }
         TOOLS = "hover,wheel_zoom,box_zoom,reset"
         graphs = []
@@ -125,10 +125,10 @@ class Seq(ListView):
                 # puzzles.append(t)
                 print(max(puz['time']))
                 cds = ColumnDataSource(data=puz)
-                p = figure(title=milestoneEvent.data['task_id'], tools=TOOLS, x_range=(0, int(maxTime)),
-                           plot_width=1200, plot_height=100, name=milestoneEvent.data['task_id'])
+                p = figure(title=milestoneEvent.data['task_id'], tools=TOOLS, x_range=(0, int(max(puz['time']))),
+                           plot_width=1400, plot_height=100, name=milestoneEvent.data['task_id'])
 
-                p.circle(source=cds, x='time', y=1, radius=6, fill_color=factor_cmap('event',
+                p.circle(source=cds, x='time', y=1, size=20, line_width=1, line_color='#A9327C', fill_color=factor_cmap('event',
                                                                                      palette=list(cmap.values()),
                                                                                      factors=list(cmap.keys())))
                 p.xgrid.visible = False
