@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, FormView
 from django.forms import ModelForm
+from django.db.models import Max
 import json
 from urllib import request
 import requests
+import datetime
 from urllib.request import urlopen
 from .models import CleanedEvent, Player
 from .forms import SeqFilter, PlayerFilter
@@ -11,7 +13,7 @@ from bokeh.plotting import figure, output_file, show
 from bokeh.resources import CDN
 from bokeh.embed import components
 from bokeh.transform import linear_cmap, factor_cmap
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, NumeralTickFormatter
 from bokeh.palettes import Viridis256, magma
 from bokeh.layouts import grid, column
 
@@ -45,65 +47,108 @@ class Seq(ListView):
         #        if event.data['task_id'] not in puzzles:
         #            puzzles.append(event.data['task_id'])
 
-        timeStamps = {'time': [],
-                      'eventType': [],
-                      # 'puzzles': [],
-                      }
-        # for puzzle in puzzles:
-        for event in events:
-            timeStamps['time'].append(event.data['timeStamp'])
-            timeStamps['eventType'].append(event.type)
+        milestoneEvents = events.filter(data__has_key='task_id').order_by('time')
+
+        maxTime = max(events.values_list('data__timeStamp', flat=True))
+        puzzle = {
+
+                    'event': [],
+                    'time': [],
+
+          }
+
+
+        # for event in events:
+        #    timeStamps['time'].append(event.data['timeStamp'])
+        #    timeStamps['eventType'].append(event.type)
                 # timeStamps['puzzle'].append(event.data['task_id'])
-
-        TOOLS = "hover,wheel_zoom,box_zoom,reset"
-        cds = ColumnDataSource(data=timeStamps)
-        p = figure(tools=TOOLS, x_range=(0, max(timeStamps['time'])),
-                   plot_width=int(max(timeStamps['time'])), plot_height=400)
-
         cmap = {
-                'ws-move_shape': '#000003',
-                'ws-click_disabled': '#07051B',
-                'ws-deselect_shape': '#150E38',
-                'ws-rotate_view':  '#281159',
-                'ws-exit_to_menu': '#3E0F72',
-                'ws-undo_action': '#55137D',
-                'ws-scale_shape': '#691C80',
-                'ws-select_shape': '#7E2481',
-                'ws-mode_change': '#942B80',
-                'ws-puzzle_started': '#A9327C',
-                'ws-start_level': '#C03A75',
-                'ws-click_nothing': '#D4436D',
-                'ws-delete_shape': '#E75262',
-                'ws-check_solution': '#F3675B',
-                'ws-create_shape': '#FA7F5E',
-                'ws-rotate_shape': '#FD9969',
-                'ws-disconnect':  '#FEB179',
-                'ws-puzzle_complete': '#FECB8E',
-                'ws-snapshot': '#FCE3A5',
-                'ws-toggle_paint_display': '#FBFCBF',
-                'ws-palette_change': '#FEAC75',
-                'ws-paint':  '#FB8A62',
-                'ws-redo_action': '#E44E64',
-                'ws-cancel_submit': '#D7456B',
-                'ws-restart_puzzle': '#742081',
-                'ws-toggle_snapshot_display': '#822581',
-                'ws-start_game': '#EE5B5E',
-                'ws-login_user': '#912A80',
-                'ws-create_user': '#AE347B',
-                'ws-select_shape_add':  '#20114D',
+            'ws-move_shape': '#000003',
+            'ws-click_disabled': '#07051B',
+            'ws-deselect_shape': '#150E38',
+            'ws-rotate_view': '#281159',
+            'ws-exit_to_menu': '#3E0F72',
+            'ws-undo_action': '#55137D',
+            'ws-scale_shape': '#691C80',
+            'ws-select_shape': '#7E2481',
+            'ws-mode_change': '#942B80',
+            'ws-puzzle_started': '#A9327C',
+            'ws-start_level': '#C03A75',
+            'ws-click_nothing': '#D4436D',
+            'ws-delete_shape': '#E75262',
+            'ws-check_solution': '#F3675B',
+            'ws-create_shape': '#FA7F5E',
+            'ws-rotate_shape': '#FD9969',
+            'ws-disconnect': '#FEB179',
+            'ws-puzzle_complete': '#FECB8E',
+            'ws-snapshot': '#FCE3A5',
+            'ws-toggle_paint_display': '#FBFCBF',
+            'ws-palette_change': '#FEAC75',
+            'ws-paint': '#FB8A62',
+            'ws-redo_action': '#E44E64',
+            'ws-cancel_submit': '#D7456B',
+            'ws-restart_puzzle': '#742081',
+            'ws-toggle_snapshot_display': '#822581',
+            'ws-start_game': '#EE5B5E',
+            'ws-login_user': '#912A80',
+            'ws-create_user': '#AE347B',
+            'ws-select_shape_add': '#20114D',
         }
+        TOOLS = "hover,wheel_zoom,box_zoom,reset"
+        graphs = []
+        puzzles = []
+        for milestoneEvent in milestoneEvents:
+            context['puzzleName'] = milestoneEvent.data['task_id']
 
-        p.circle(x='time', y=1, radius=6, source=cds,
-               fill_color=factor_cmap('eventType', palette=list(cmap.values()), factors=list(cmap.keys())))
-        p.hover.tooltips = [
-            ('eventType', '@eventType'),
-        ]
-        fullWidth = column(p, sizing_mode='stretch_width')
+            nextTimes = milestoneEvents.filter(time__gt=milestoneEvent.time, data__has_key='task_id').order_by('time').\
+                exclude(data__task_id=milestoneEvent.data['task_id']).distinct()
+            for thing in nextTimes:
+                if thing.data['task_id'] != milestoneEvent.data['task_id']:
+                    nextTime = thing
+                    break
+                # nextTime = milestoneEvent.get_next_by_time()
+            # print(nextTime.time)
+            # print(milestoneEvent.time)
+            puzzleEvents = events.filter(time__gt=milestoneEvent.time, time__lt=nextTime.time).distinct()
+            puz = {
+                'time': [],
+                'event': []
+            }
+            puz['time'].append(int(milestoneEvent.data['timeStamp']))
+            puz['event'].append(milestoneEvent.type)
+            print(milestoneEvent.data['task_id'] + ' ' + str(puzzleEvents.count()))
+            # puzzle['name'] = milestoneEvent.data['task_id']
+            if puzzleEvents.count() != 0:
+                for puzzleEvent in puzzleEvents:
+                    puz['time'].append(int(puzzleEvent.data['timeStamp']))
+                    puz['event'].append(puzzleEvent.type)
+                # puzzles.append(t)
+                print(max(puz['time']))
+                cds = ColumnDataSource(data=puz)
+                p = figure(title=milestoneEvent.data['task_id'], tools=TOOLS, x_range=(0, int(maxTime)),
+                           plot_width=1200, plot_height=100, name=milestoneEvent.data['task_id'])
+
+                p.circle(source=cds, x='time', y=1, radius=6, fill_color=factor_cmap('event',
+                                                                                     palette=list(cmap.values()),
+                                                                                     factors=list(cmap.keys())))
+                p.xgrid.visible = False
+                p.ygrid.visible = False
+
+                p.min_border = 0
+                p.yaxis.visible = False
+                # p.x_scale = 'ContinuousScale'
+                p.xaxis[0].formatter = NumeralTickFormatter(format='00:00:00')
+                p.hover.tooltips = [('event', '@event'), ('time', '@time')]
+
+                graphs.append(p)
+                puzzles.append(puzzle)
+        fullWidth = column(graphs)
         script, div = components(fullWidth, CDN)
         context['script'] = script
         context['div'] = div
-        print(timeStamps)
         context['playerForm'] = playerForm
         context['events'] = events
+        print(str(len(graphs)) + ' number of graphs')
+
         return context
 

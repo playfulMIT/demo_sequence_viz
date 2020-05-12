@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Levels of Activity</title>
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.0.1.min.js"></script>
+
+
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.0.2.min.js"></script>
 
 {{ script | safe }}
 </head>
@@ -13,13 +15,6 @@
 <button value="submit">Change Player</button></form>
 {{ div|safe }}
 
-<!-- <div style="display: flex; flex-direction: row">
 
-{% for event in events %}
-
-    {% ifchanged %}{{ event.data.user }}: {% endifchanged %}{{ event.type }} - {{ event.data.timeStamp }}
-{% endfor %}
-
-</div>-->
 </body>
 </html>
