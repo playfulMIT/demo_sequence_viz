@@ -94,7 +94,7 @@ class Seq(ListView):
             'ws-create_user': '#AE347B',
             'ws-select_shape_add': '#691C80',
         }
-        TOOLS = "hover,wheel_zoom,box_zoom,reset"
+        TOOLS = "hover,wheel_zoom,box_zoom,reset,xpan,"
         graphs = []
         puzzles = []
         for milestoneEvent in milestoneEvents:
@@ -125,15 +125,15 @@ class Seq(ListView):
                 # puzzles.append(t)
                 print(max(puz['time']))
                 cds = ColumnDataSource(data=puz)
-                p = figure(title=milestoneEvent.data['task_id'], tools=TOOLS, x_range=(0, int(max(puz['time']))),
-                           plot_width=1400, plot_height=100, name=milestoneEvent.data['task_id'])
+                p = figure(title=milestoneEvent.data['task_id'], tools=TOOLS, toolbar_location='above', x_range=(0, max((puz['time']))),
+                           plot_width=1400, plot_height=300, name=milestoneEvent.data['task_id'])
 
                 p.circle(source=cds, x='time', y=1, size=20, line_width=1, line_color='#A9327C', fill_color=factor_cmap('event',
                                                                                      palette=list(cmap.values()),
-                                                                                     factors=list(cmap.keys())))
+                                                                                     factors=list(cmap.keys())),)
                 p.xgrid.visible = False
                 p.ygrid.visible = False
-
+                p.legend.location = 'top_right'
                 p.min_border = 0
                 p.yaxis.visible = False
                 # p.x_scale = 'ContinuousScale'
