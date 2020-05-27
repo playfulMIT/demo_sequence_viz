@@ -13,7 +13,7 @@ from bokeh.plotting import figure, output_file, show
 from bokeh.resources import CDN
 from bokeh.embed import components
 from bokeh.transform import linear_cmap, factor_cmap
-from bokeh.models import ColumnDataSource, NumeralTickFormatter
+from bokeh.models import ColumnDataSource, NumeralTickFormatter, Legend, LegendItem
 from bokeh.palettes import Viridis256, magma
 from bokeh.layouts import grid, column
 
@@ -130,10 +130,14 @@ class Seq(ListView):
 
                 p.circle(source=cds, x='time', y=1, size=20, line_width=1, line_color='#A9327C', fill_color=factor_cmap('event',
                                                                                      palette=list(cmap.values()),
-                                                                                     factors=list(cmap.keys())),)
+                                                                                     factors=list(cmap.keys())), legend_group='event')
                 p.xgrid.visible = False
                 p.ygrid.visible = False
-                p.legend.location = 'top_right'
+                p.legend.location = 'bottom_center'
+                p.legend.orientation = 'horizontal'
+                p.legend.click_policy = 'mute'
+                # p.legend.glyph_width = 5
+                p.legend.label_text_font_size = '8pt'
                 p.min_border = 0
                 p.yaxis.visible = False
                 # p.x_scale = 'ContinuousScale'
