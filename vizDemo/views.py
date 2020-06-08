@@ -97,55 +97,77 @@ class Seq(ListView):
         TOOLS = "hover,wheel_zoom,box_zoom,reset,xpan,"
         graphs = []
         puzzles = []
+        mse = []
         for milestoneEvent in milestoneEvents:
             context['puzzleName'] = milestoneEvent.data['task_id']
 
-            nextTimes = milestoneEvents.filter(time__gt=milestoneEvent.time, data__has_key='task_id').order_by('time').\
-                exclude(data__task_id=milestoneEvent.data['task_id']).distinct()
-            for thing in nextTimes:
-                if thing.data['task_id'] != milestoneEvent.data['task_id']:
-                    nextTime = thing
-                    break
-                # nextTime = milestoneEvent.get_next_by_time()
-            # print(nextTime.time)
-            # print(milestoneEvent.time)
-            puzzleEvents = events.filter(time__gt=milestoneEvent.time, time__lt=nextTime.time).distinct()
-            puz = {
-                'time': [],
-                'event': []
-            }
-            puz['time'].append(int(milestoneEvent.data['timeStamp']))
-            puz['event'].append(milestoneEvent.type)
-            print(milestoneEvent.data['task_id'] + ' ' + str(puzzleEvents.count()))
-            # puzzle['name'] = milestoneEvent.data['task_id']
-            if puzzleEvents.count() != 0:
-                for puzzleEvent in puzzleEvents:
-                    puz['time'].append(int(puzzleEvent.data['timeStamp']))
-                    puz['event'].append(puzzleEvent.type)
-                # puzzles.append(t)
-                print(max(puz['time']))
-                cds = ColumnDataSource(data=puz)
-                p = figure(title=milestoneEvent.data['task_id'], tools=TOOLS, toolbar_location='above', x_range=(0, max((puz['time']))),
-                           plot_width=1400, plot_height=300, name=milestoneEvent.data['task_id'])
+            nextTimes = milestoneEvents.filter(time__gt=milestoneEvent.time, data__has_key='task_id', data__task_id=milestoneEvent.data['task_id']).order_by('time')
+            nextTime = nextTimes.last()
+            if nextTime is not None and milestoneEvent.data['task_id'] not in mse:
+                mse.append(milestoneEvent.data['task_id'])
+                print(nextTimes)
+                    # nextTime = milestoneEvent.get_next_by_time()
+                # print(nextTime.time)
+                # print(milestoneEvent.time)
+                puzzleEvents = events.filter(time__gt=milestoneEvent.time, time__lt=nextTime.time).distinct()
+                puz = {
+                    'time': [],
+                    'event': []
+                }
+                puz2 = {
+                    'time': 'event'
+                }
+                puz['time'].append(int(milestoneEvent.data['timeStamp']))
+                puz['event'].append(milestoneEvent.type)
 
-                p.circle(source=cds, x='time', y=1, size=20, line_width=1, line_color='#A9327C', fill_color=factor_cmap('event',
-                                                                                     palette=list(cmap.values()),
-                                                                                     factors=list(cmap.keys())), legend_group='event')
-                p.xgrid.visible = False
-                p.ygrid.visible = False
-                p.legend.location = 'bottom_center'
-                p.legend.orientation = 'horizontal'
-                p.legend.click_policy = 'mute'
-                # p.legend.glyph_width = 5
-                p.legend.label_text_font_size = '8pt'
-                p.min_border = 0
-                p.yaxis.visible = False
-                # p.x_scale = 'ContinuousScale'
-                p.xaxis[0].formatter = NumeralTickFormatter(format='00:00:00')
-                p.hover.tooltips = [('event', '@event'), ('time', '@time')]
+                puz2.update({milestoneEvent.data['timeStamp']:milestoneEvent.type})
+                print(milestoneEvent.data['task_id'] + ' ' + str(puzzleEvents.count()))
+                # puzzle['name'] = milestoneEvent.data['task_id']
+                if puzzleEvents.count() != 0:
+                    for puzzleEvent in puzzleEvents:
+                        puz['time'].append(int(puzzleEvent.data['timeStamp']))
+                        puz['event'].append(puzzleEvent.type)
+                        puz2.update({int(puzzleEvent.data['timeStamp']): puzzleEvent.type})
+                    # puzzles.append(t)
+                    print(max(puz['time']))
+                    cds = ColumnDataSource(data=puz)
+                    p = figure(title=milestoneEvent.data['task_id'], tools=TOOLS, toolbar_location='above', x_range=(0, max((puz['time']))),
+                               plot_width=1400, plot_height=300, name=milestoneEvent.data['task_id'], lod_factor=2)
+                    puz3 = puz2.items()
 
-                graphs.append(p)
-                puzzles.append(puzzle)
+                    for k, v in puz3:
+                        if v == 'ws-create_shape' or v == 'ws-rotate_shape' or v == 'ws-move_shape' or v == 'ws-select_shape' or v == 'ws-delete_shape':
+                            p.circle(x=k, y=1, size=20, line_width=1, line_color='#A9327C',
+                                     fill_color='red', legend_label='manipulate shape')
+                        elif v == 'ws-puzzle_started' or v == 'ws-restart_puzzle' or v == 'ws-exit_to_menu' or v == 'ws-disconnect':
+                            p.diamond(x=k, y=1, size=40, line_width=1, line_color='#A9327C',
+                                     fill_color='green', legend_label='milestone event')
+                        elif v == 'ws-check_solution':
+                            p.square(x=k, y=1, size=50, fill_color='purple', legend_label='submission')
+                        elif v == 'ws-rotate_view' or v == 'ws-snapshot':
+                            p.triangle(x=k, y=1, size=20, fill_color='yellow', legend_label='snapshot')
+                        elif v == 'ws-click_nothing':
+                            p.asterisk(x=k, y=1, size=10, fill_color='orange', legend_label='clicked nothing')
+                        else:
+
+                            p.circle_x(source=cds, x=k, y=1, size=10, line_width=1, line_color='#A9327C', fill_color=factor_cmap('event', palette=list(cmap.values()), factors=list(cmap.keys())))
+                    # p.circle(source=cds, x='time', y=1, size=20, line_width=1, line_color='#A9327C', fill_color=factor_cmap('event', palette=list(cmap.values()), factors=list(cmap.keys())), legend_group='event')
+                    p.xgrid.visible = False
+                    p.ygrid.visible = False
+                    p.legend.location = 'bottom_center'
+                    p.legend.orientation = 'horizontal'
+                    p.legend.click_policy = 'hide'
+                    # p.legend.glyph_width = 5
+                    p.legend.label_text_font_size = '8pt'
+                    p.min_border = 0
+                    p.yaxis.visible = False
+                    # p.x_scale = 'ContinuousScale'
+                    p.xaxis[0].formatter = NumeralTickFormatter(format='00:00:00')
+                    # p.hover.tooltips = [('event', 'event'), ('time', 'time')]
+
+                    graphs.append(p)
+                    if puzzle not in puzzles:
+                        puzzles.append(puzzle)
         fullWidth = column(graphs)
         script, div = components(fullWidth, CDN)
         context['script'] = script
