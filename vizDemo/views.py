@@ -32,14 +32,23 @@ class Seq(ListView):
         context = super(Seq, self).get_context_data()
         playerList = Player.objects.all()
 
+        seqForm = SeqFilter(self.request.GET)
         playerForm = PlayerFilter(self.request.GET)
         if playerForm.is_valid():
             events = CleanedEvent.objects.all().filter(user=playerForm.cleaned_data['chooseUser']).filter(
-                data__has_key='timeStamp').order_by('time')
+                data__has_key='timeStamp')
         else:
             events = CleanedEvent.objects.all().filter(user=playerList.first()).filter(
-                data__has_key='timeStamp').order_by('time')
+                data__has_key='timeStamp')
 
+        if seqForm.is_valid():
+            # events = CleanedEvent.objects.all().filter(data__has_key='data__task_id').filter(data__task_id=seqForm.cleaned_data['choosePuzzle']).order_by('user')
+            # for event in events:
+                # moreEvents = CleanedEvent.objects.all().filter(time__gt=event.time, time__lt=event.get_next_in_order.time)
+
+                # events.union(moreEvents).order_by('user')
+            seqEvents = CleanedEvent.objects.all().filter(data__has_key='data__task_id').filter(data__task_id=seqForm.cleaned_data['choosePuzzle']).order_by('user')
+            print(seqEvents.count)
         # output to static HTML file (with CDN resources)
         # puzzles = []
         # for event in events:
@@ -49,7 +58,7 @@ class Seq(ListView):
 
         milestoneEvents = events.filter(data__has_key='task_id').order_by('time')
 
-        maxTime = max(events.values_list('data__timeStamp', flat=True))
+        # maxTime = max(events.values_list('data__timeStamp', flat=True))
         puzzle = {
 
                     'event': [],
@@ -173,6 +182,7 @@ class Seq(ListView):
         context['script'] = script
         context['div'] = div
         context['playerForm'] = playerForm
+        context['seqForm'] = seqForm
         context['events'] = events
         print(str(len(graphs)) + ' number of graphs')
 
