@@ -15,4 +15,5 @@ class CleanedEvent(models.Model):
     user = models.ForeignKey(Player, on_delete=models.CASCADE, null=True)
     session = models.CharField(max_length=100)
     type = models.CharField(max_length=32)
+    puzzle = models.CharField(max_length=100)
     data = JSONField(default=dict)
