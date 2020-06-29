@@ -31,6 +31,7 @@ class Seq(ListView):
     def get_context_data(self, **kwargs):
         context = super(Seq, self).get_context_data()
         playerList = Player.objects.all()
+        queryset = CleanedEvent.objects.all()
 
         seqForm = SeqFilter(self.request.GET)
         playerForm = PlayerFilter(self.request.GET)
@@ -38,7 +39,7 @@ class Seq(ListView):
         sortByPlayer = bool()
 
         if playerForm.is_valid():
-            events = CleanedEvent.objects.all().filter(user=playerForm.cleaned_data['chooseUser']).filter(
+            events = queryset.filter(user=playerForm.cleaned_data['chooseUser']).filter(
                 data__has_key='timeStamp')
             milestoneEvents = events.order_by('time').distinct('puzzle')
             sortByPlayer = True
@@ -50,21 +51,21 @@ class Seq(ListView):
         if seqForm.is_valid():
             if seqForm.cleaned_data['choosePuzzle'] == '':
                 if seqForm.cleaned_data['chooseUser'] == '':
-                    events = CleanedEvent.objects.all().filter(data__has_key='timeStamp')
+                    events = queryset.filter(data__has_key='timeStamp')
                 else:
-                    events = CleanedEvent.objects.all().filter(data__has_key='timeStamp').filter(
+                    events = queryset.filter(data__has_key='timeStamp').filter(
                         user=seqForm.cleaned_data['chooseUser'])
                 milestoneEvents = events.order_by('puzzle').distinct('puzzle')
 
             else:
                 if seqForm.cleaned_data['chooseUser'] is None:
-                    events = CleanedEvent.objects.all().filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
+                    events = CleanedEvent.objects.filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
                         data__has_key='timeStamp')
                 else:
-                    events = CleanedEvent.objects.all().filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
+                    events = CleanedEvent.objects.filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
                         data__has_key='timeStamp').filter(user=seqForm.cleaned_data['chooseUser'])
                 milestoneEvents = events.order_by('user').distinct('user')
-            print(events.count())
+            # print(events.count())
             sortByPlayer = False
             context['eventCount'] = events.count()
 
@@ -135,28 +136,26 @@ class Seq(ListView):
                 context['puzzleName'] = milestoneEvent.user.user
                 name = milestoneEvent.user.user
 
-            puz = {
-                'time': [],
-                'event': []
-            }
             puz2 = {
                 'time': 'event'
             }
-            puz['time'].append(int(milestoneEvent.data['timeStamp']))
-            puz['event'].append(milestoneEvent.type)
+            # puz['time'].append(int(milestoneEvent.data['timeStamp']))
+            # puz['event'].append(milestoneEvent.type)
 
             puz2.update({milestoneEvent.data['timeStamp']: milestoneEvent.type})
             # print(milestoneEvent.data['task_id'] + ' ' + str(puzzleEvents.count()))
             # puzzle['name'] = milestoneEvent.data['task_id']
+            maxTime = puzzleEvents.latest('data__timeStamp').data['timeStamp']
+
             if puzzleEvents.count() != 0:
                 for puzzleEvent in puzzleEvents:
-                    puz['time'].append(int(puzzleEvent.data['timeStamp']))
-                    puz['event'].append(puzzleEvent.type)
+                    # puz['time'].append(int(puzzleEvent.data['timeStamp']))
+                    # puz['event'].append(puzzleEvent.type)
                     puz2.update({int(puzzleEvent.data['timeStamp']): puzzleEvent.type})
                 # puzzles.append(t)
-                print(max(puz['time']))
-                cds = ColumnDataSource(data=puz)
-                p = figure(title=name, tools=TOOLS, toolbar_location='above', x_range=(0, max((puz['time']))),
+                # print(max(puz['time']))
+                # cds = ColumnDataSource(data=puz)
+                p = figure(title=name, tools=TOOLS, toolbar_location='above', x_range=(0, maxTime),
                            plot_width=1400, plot_height=300, name=name, lod_factor=2)
                 puz3 = puz2.items()
 
@@ -173,10 +172,8 @@ class Seq(ListView):
                         p.triangle(x=k, y=1, size=20, fill_color='yellow', legend_label='snapshot')
                     elif v == 'ws-click_nothing':
                         p.asterisk(x=k, y=1, size=10, fill_color='orange', legend_label='clicked nothing')
-                    else:
-
-                        p.circle_x(source=cds, x=k, y=1, size=10, line_width=1, line_color='#A9327C', fill_color=factor_cmap('event', palette=list(cmap.values()), factors=list(cmap.keys())))
-                # p.circle(source=cds, x='time', y=1, size=20, line_width=1, line_color='#A9327C', fill_color=factor_cmap('event', palette=list(cmap.values()), factors=list(cmap.keys())), legend_group='event')
+                    # else:
+                        # p.circle_x(x=k, y=1, size=10, line_width=1, line_color='#A9327C', fill_color='#DBFF33')
                 p.xgrid.visible = False
                 p.ygrid.visible = False
                 p.legend.location = 'bottom_center'
@@ -200,7 +197,7 @@ class Seq(ListView):
         context['playerForm'] = playerForm
         context['seqForm'] = seqForm
         context['events'] = events
-        print(str(len(graphs)) + ' number of graphs')
+        # print(str(len(graphs)) + ' number of graphs')
 
         return context
 
