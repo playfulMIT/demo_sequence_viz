@@ -48,12 +48,26 @@ class Seq(ListView):
         #       data__has_key='timeStamp')
 
         if seqForm.is_valid():
-            events = CleanedEvent.objects.all().filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
-                data__has_key='timeStamp'
-            )
-            milestoneEvents = events.order_by('user').distinct('user')
+            if seqForm.cleaned_data['choosePuzzle'] == '':
+                if seqForm.cleaned_data['chooseUser'] == '':
+                    events = CleanedEvent.objects.all().filter(data__has_key='timeStamp')
+                else:
+                    events = CleanedEvent.objects.all().filter(data__has_key='timeStamp').filter(
+                        user=seqForm.cleaned_data['chooseUser'])
+                milestoneEvents = events.order_by('puzzle').distinct('puzzle')
+
+            else:
+                if seqForm.cleaned_data['chooseUser'] is None:
+                    events = CleanedEvent.objects.all().filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
+                        data__has_key='timeStamp')
+                else:
+                    events = CleanedEvent.objects.all().filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
+                        data__has_key='timeStamp').filter(user=seqForm.cleaned_data['chooseUser'])
+                milestoneEvents = events.order_by('user').distinct('user')
             print(events.count())
             sortByPlayer = False
+            context['eventCount'] = events.count()
+
             # print(list(seqEvents).count)
         # output to static HTML file (with CDN resources)
         # puzzles = []
@@ -61,7 +75,6 @@ class Seq(ListView):
         #    if event.type is 'ws_puzzle-started' or 'ws_start-level' or 'ws_puzzle-complete':
         #        if event.data['task_id'] not in puzzles:
         #            puzzles.append(event.data['task_id'])
-
 
         # maxTime = max(events.values_list('data__timeStamp', flat=True))
         puzzle = {
@@ -112,9 +125,8 @@ class Seq(ListView):
         graphs = []
         puzzles = []
         for milestoneEvent in milestoneEvents:
-            # nextTimes = milestoneEvents.filter(time__gt=milestoneEvent.time, data__has_key='task_id', data__task_id=milestoneEvent.data['task_id']).order_by('time')
-            # nextTime = nextTimes.last()
-            if sortByPlayer:
+
+            if seqForm.cleaned_data['choosePuzzle'] == '':
                 puzzleEvents = events.filter(puzzle=milestoneEvent.puzzle)
                 context['puzzleName'] = milestoneEvent.puzzle
                 name = milestoneEvent.puzzle
@@ -122,11 +134,7 @@ class Seq(ListView):
                 puzzleEvents = events.filter(user=milestoneEvent.user)
                 context['puzzleName'] = milestoneEvent.user.user
                 name = milestoneEvent.user.user
-                # mse.append(milestoneEvent.data['task_id'])
-                # print(nextTimes)
-                    # nextTime = milestoneEvent.get_next_by_time()
-                # print(nextTime.time)
-                # print(milestoneEvent.time)
+
             puz = {
                 'time': [],
                 'event': []
