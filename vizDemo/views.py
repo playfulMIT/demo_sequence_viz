@@ -25,18 +25,18 @@ def sequenceOfEvents(request):
 
 class Seq(ListView):
     model = CleanedEvent
-    queryset = CleanedEvent.objects.all()
+    queryset = CleanedEvent.objects.none()
     template_name = 'vizDemo/seq.html'
 
     def get_context_data(self, **kwargs):
         context = super(Seq, self).get_context_data()
-        playerList = Player.objects.all()
+        # playerList = Player.objects.all()
         queryset = CleanedEvent.objects.all()
 
         seqForm = SeqFilter(self.request.GET)
         playerForm = PlayerFilter(self.request.GET)
 
-        sortByPlayer = bool()
+        # sortByPlayer = bool()
 
         if playerForm.is_valid():
             events = queryset.filter(user=playerForm.cleaned_data['chooseUser']).filter(
@@ -122,7 +122,7 @@ class Seq(ListView):
             'ws-create_user': '#AE347B',
             'ws-select_shape_add': '#691C80',
         }
-        TOOLS = "hover,wheel_zoom,box_zoom,reset,xpan,"
+        TOOLS = "wheel_zoom,box_zoom,reset,xpan,"
         graphs = []
         puzzles = []
         for milestoneEvent in milestoneEvents:
@@ -134,7 +134,7 @@ class Seq(ListView):
             else:
                 puzzleEvents = events.filter(user=milestoneEvent.user)
                 context['puzzleName'] = milestoneEvent.user.user
-                name = milestoneEvent.user.user
+                name = str(milestoneEvent.user)
 
             puz2 = {
                 'time': 'event'
@@ -156,20 +156,22 @@ class Seq(ListView):
                 # print(max(puz['time']))
                 # cds = ColumnDataSource(data=puz)
                 p = figure(title=name, tools=TOOLS, toolbar_location='above', x_range=(0, maxTime),
-                           plot_width=1400, plot_height=300, name=name, lod_factor=2)
+                           plot_width=1400, plot_height=300, name=name, lod_factor=2, output_backend="webgl")
                 puz3 = puz2.items()
 
                 for k, v in puz3:
                     if v == 'ws-create_shape' or v == 'ws-rotate_shape' or v == 'ws-move_shape' or v == 'ws-select_shape' or v == 'ws-delete_shape':
                         p.circle(x=k, y=1, size=20, line_width=1, line_color='#A9327C',
                                  fill_color='red', legend_label='manipulate shape')
-                    elif v == 'ws-puzzle_started' or v == 'ws-restart_puzzle' or v == 'ws-exit_to_menu' or v == 'ws-disconnect':
+                    elif v == 'ws-puzzle_started' or v == 'ws-restart_puzzle' or v == 'ws-exit_to_menu' or v == 'ws-disconnect' or v == 'we-puzzle_complete':
                         p.diamond(x=k, y=1, size=40, line_width=1, line_color='#A9327C',
                                  fill_color='green', legend_label='milestone event')
                     elif v == 'ws-check_solution':
                         p.square(x=k, y=1, size=50, fill_color='purple', legend_label='submission')
-                    elif v == 'ws-rotate_view' or v == 'ws-snapshot':
+                    elif v == 'ws-snapshot':
                         p.triangle(x=k, y=1, size=20, fill_color='yellow', legend_label='snapshot')
+                    elif v == 'ws-rotate_view':
+                        p.triangle(x=k, y=1, size=20, fill_color='blue', legend_label='rotate view')
                     elif v == 'ws-click_nothing':
                         p.asterisk(x=k, y=1, size=10, fill_color='orange', legend_label='clicked nothing')
                     # else:

@@ -7,7 +7,7 @@ class Player(models.Model):
     user = models.CharField(max_length=200, default='')
 
     def __str__(self):
-        return self.user
+        return 'Student ' + str(self.id)
 
 
 class CleanedEvent(models.Model):
