@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'w$&q#kb$sw(4n1xn(-f2ql*!p+08p)np%%d#0ll%otfhc5wj7g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'vizDemo.apps.VizdemoConfig',
+    'bokeh',
 ]
 
 MIDDLEWARE = [

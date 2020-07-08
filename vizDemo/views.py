@@ -23,10 +23,11 @@ def sequenceOfEvents(request):
     print('response' + str(response.status_code))
 
 
-class Seq(ListView):
+class Seq(FormView):
     model = CleanedEvent
-    queryset = CleanedEvent.objects.none()
+    # queryset = CleanedEvent.objects.none()
     template_name = 'vizDemo/seq.html'
+    form_class = SeqFilter
 
     def get_context_data(self, **kwargs):
         context = super(Seq, self).get_context_data()
@@ -50,8 +51,10 @@ class Seq(ListView):
             'ws-start_game',
             'ws-select_shape_add'
         ]
-        queryset = CleanedEvent.objects.all().filter(type__in=filterSet)
-        print(queryset.count())
+
+
+        # queryset = CleanedEvent.objects.all().filter(type__in=filterSet)
+        # print(queryset.count())
         seqForm = SeqFilter(self.request.GET)
         playerForm = PlayerFilter(self.request.GET)
 
@@ -66,24 +69,25 @@ class Seq(ListView):
         if seqForm.is_valid():
             if seqForm.cleaned_data['choosePuzzle'] == '':
                 if seqForm.cleaned_data['chooseUser'] == '':
-                    events = queryset.filter(data__has_key='timeStamp')
+                    events = CleanedEvent.objects.filter(type__in=filterSet).filter(data__has_key='timeStamp')
                 else:
-                    events = queryset.filter(data__has_key='timeStamp').filter(
+                    events = CleanedEvent.objects.filter(type__in=filterSet).filter(data__has_key='timeStamp').filter(
                         user=seqForm.cleaned_data['chooseUser'])
                 milestoneEvents = events.order_by('puzzle').distinct('puzzle')
 
             else:
                 if seqForm.cleaned_data['chooseUser'] is None:
-                    events = queryset.filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
+                    events = CleanedEvent.objects.filter(type__in=filterSet).filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
                         data__has_key='timeStamp')
                 else:
-                    events = queryset.filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
+                    events = CleanedEvent.objects.filter(type__in=filterSet).filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
                         data__has_key='timeStamp').filter(user=seqForm.cleaned_data['chooseUser'])
                 milestoneEvents = events.order_by('user').distinct('user')
             # print(events.count())
             # sortByPlayer = False
             context['eventCount'] = events.count()
-
+        else:
+            events = None
             # print(list(seqEvents).count)
         # output to static HTML file (with CDN resources)
         # puzzles = []
@@ -140,7 +144,24 @@ class Seq(ListView):
         TOOLS = "wheel_zoom,box_zoom,reset,xpan,"
         graphs = []
         puzzles = []
-        for milestoneEvent in milestoneEvents:
+
+        manipulateShape = {
+            'ws-delete_shape',
+            'ws-rotate_shape',
+            'ws-create_shape',
+            'ws-create_shape',
+            'ws-select_shape'
+        }
+
+        milestoneevent = {
+            'ws-puzzle_started',
+            'ws-restart_puzzle',
+            'ws-exit_to_menu',
+            'ws-disconnect',
+            'we-puzzle_complete'
+        }
+
+        for milestoneEvent in milestoneEvents.iterator():
 
             if seqForm.cleaned_data['choosePuzzle'] == '':
                 puzzleEvents = events.filter(puzzle=milestoneEvent.puzzle)
@@ -163,7 +184,7 @@ class Seq(ListView):
             maxTime = puzzleEvents.latest('data__timeStamp').data['timeStamp']
 
             if puzzleEvents.count() != 0:
-                for puzzleEvent in puzzleEvents:
+                for puzzleEvent in puzzleEvents.iterator():
                     # puz['time'].append(int(puzzleEvent.data['timeStamp']))
                     # puz['event'].append(puzzleEvent.type)
                     puz2.update({int(puzzleEvent.data['timeStamp']): puzzleEvent.type})
@@ -171,14 +192,14 @@ class Seq(ListView):
                 # print(max(puz['time']))
                 # cds = ColumnDataSource(data=puz)
                 p = figure(title=name, tools=TOOLS, toolbar_location='above', x_range=(0, maxTime),
-                           plot_width=1400, plot_height=300, name=name, lod_factor=2, output_backend="webgl")
+                           plot_width=1400, plot_height=300, name=name, lod_factor=2, output_backend='webgl')
                 puz3 = puz2.items()
 
-                for k, v in puz3:
-                    if v == 'ws-create_shape' or v == 'ws-rotate_shape' or v == 'ws-move_shape' or v == 'ws-select_shape' or v == 'ws-delete_shape':
+                for k, v in puz2.items():
+                    if v in manipulateShape:
                         p.circle(x=k, y=1, size=20, line_width=1, line_color='#A9327C',
                                  fill_color='red', legend_label='manipulate shape')
-                    elif v == 'ws-puzzle_started' or v == 'ws-restart_puzzle' or v == 'ws-exit_to_menu' or v == 'ws-disconnect' or v == 'we-puzzle_complete':
+                    elif v in milestoneevent:
                         p.diamond(x=k, y=1, size=30, line_width=1, line_color='#A9327C',
                                  fill_color='green', legend_label='milestone event')
                     elif v == 'ws-check_solution':
