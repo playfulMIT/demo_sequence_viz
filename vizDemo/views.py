@@ -31,18 +31,33 @@ class Seq(ListView):
     def get_context_data(self, **kwargs):
         context = super(Seq, self).get_context_data()
         # playerList = Player.objects.all()
-        queryset = CleanedEvent.objects.all()
-
+        filterSet = [
+            'ws-puzzle_started',
+            'ws-rotate_view',
+            'ws-exit_to_menu',
+            'ws-scale_shape',
+            'ws-deselect_shape',
+            'ws-select_shape',
+            'ws-click_nothing',
+            'ws-delete_shape',
+            'ws-check_solution',
+            'ws-create_shape',
+            'ws-rotate_shape',
+            'ws-disconnect',
+            'ws-puzzle_complete',
+            'ws-snapshot',
+            'ws-restart_puzzle',
+            'ws-start_game',
+            'ws-select_shape_add'
+        ]
+        queryset = CleanedEvent.objects.all().filter(type__in=filterSet)
+        print(queryset.count())
         seqForm = SeqFilter(self.request.GET)
         playerForm = PlayerFilter(self.request.GET)
 
         # sortByPlayer = bool()
 
-        if playerForm.is_valid():
-            events = queryset.filter(user=playerForm.cleaned_data['chooseUser']).filter(
-                data__has_key='timeStamp')
-            milestoneEvents = events.order_by('time').distinct('puzzle')
-            sortByPlayer = True
+            # sortByPlayer = True
 
         # else:
         #    events = CleanedEvent.objects.all().filter(user=playerList.first()).filter(
@@ -59,14 +74,14 @@ class Seq(ListView):
 
             else:
                 if seqForm.cleaned_data['chooseUser'] is None:
-                    events = CleanedEvent.objects.filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
+                    events = queryset.filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
                         data__has_key='timeStamp')
                 else:
-                    events = CleanedEvent.objects.filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
+                    events = queryset.filter(puzzle=seqForm.cleaned_data['choosePuzzle']).filter(
                         data__has_key='timeStamp').filter(user=seqForm.cleaned_data['chooseUser'])
                 milestoneEvents = events.order_by('user').distinct('user')
             # print(events.count())
-            sortByPlayer = False
+            # sortByPlayer = False
             context['eventCount'] = events.count()
 
             # print(list(seqEvents).count)
@@ -164,10 +179,10 @@ class Seq(ListView):
                         p.circle(x=k, y=1, size=20, line_width=1, line_color='#A9327C',
                                  fill_color='red', legend_label='manipulate shape')
                     elif v == 'ws-puzzle_started' or v == 'ws-restart_puzzle' or v == 'ws-exit_to_menu' or v == 'ws-disconnect' or v == 'we-puzzle_complete':
-                        p.diamond(x=k, y=1, size=40, line_width=1, line_color='#A9327C',
+                        p.diamond(x=k, y=1, size=30, line_width=1, line_color='#A9327C',
                                  fill_color='green', legend_label='milestone event')
                     elif v == 'ws-check_solution':
-                        p.square(x=k, y=1, size=50, fill_color='purple', legend_label='submission')
+                        p.square(x=k, y=1, size=30, fill_color='purple', legend_label='submission')
                     elif v == 'ws-snapshot':
                         p.triangle(x=k, y=1, size=20, fill_color='yellow', legend_label='snapshot')
                     elif v == 'ws-rotate_view':
@@ -198,7 +213,6 @@ class Seq(ListView):
         context['div'] = div
         context['playerForm'] = playerForm
         context['seqForm'] = seqForm
-        context['events'] = events
         # print(str(len(graphs)) + ' number of graphs')
 
         return context
