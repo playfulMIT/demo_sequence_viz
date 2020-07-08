@@ -1,21 +1,12 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView, FormView
-from django.forms import ModelForm
-from django.db.models import Max
-import json
-from urllib import request
+from django.views.generic import FormView
 import requests
-import datetime
-from urllib.request import urlopen
-from .models import CleanedEvent, Player
+from .models import CleanedEvent
 from .forms import SeqFilter, PlayerFilter
-from bokeh.plotting import figure, output_file, show
+from bokeh.plotting import figure
 from bokeh.resources import CDN
 from bokeh.embed import components
-from bokeh.transform import linear_cmap, factor_cmap
-from bokeh.models import ColumnDataSource, NumeralTickFormatter, Legend, LegendItem
-from bokeh.palettes import Viridis256, magma
-from bokeh.layouts import grid, column
+from bokeh.models import NumeralTickFormatter
+from bokeh.layouts import column
 
 
 def sequenceOfEvents(request):
@@ -193,7 +184,6 @@ class Seq(FormView):
                 # cds = ColumnDataSource(data=puz)
                 p = figure(title=name, tools=TOOLS, toolbar_location='above', x_range=(0, maxTime),
                            plot_width=1400, plot_height=300, name=name, lod_factor=2, output_backend='webgl')
-                puz3 = puz2.items()
 
                 for k, v in puz2.items():
                     if v in manipulateShape:

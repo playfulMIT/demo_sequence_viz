@@ -12,7 +12,8 @@ class SeqFilter(forms.Form):
     def __init__(self, *args, **kwargs):
         super(SeqFilter, self).__init__(*args, **kwargs)
         # self.fields['chooseUser'].choices = Player.objects.all().values_list('user', 'user')
-        self.fields['choosePuzzle'].choices = CleanedEvent.objects.all().values_list('puzzle', 'puzzle').distinct()
+        self.fields['choosePuzzle'].choices = CleanedEvent.objects.all().values_list('puzzle', 'puzzle').distinct().\
+            exclude(puzzle='')
         self.fields['choosePuzzle'].choices.insert(0, ('', 'All'))
 
 

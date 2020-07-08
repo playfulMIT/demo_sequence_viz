@@ -6,13 +6,11 @@
     <title>Levels of Activity</title>
 
 
-    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.1.1.min.js"></script>
+    <script src="{% static "bokeh.js" %}"></script>
 
 {{ script | safe }}
 </head>
 <body>
-<!-- <form action="" >{{ playerForm }}
-<button value="submit">Change Player</button></form> -->
 
 <form action="" >{{ seqForm }}
 <button value="submit">Change Puzzle</button></form>

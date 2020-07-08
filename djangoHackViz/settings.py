@@ -78,9 +78,9 @@ if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
+            'NAME': 'dataviz',
+            'USER': 'liamhunt',
+            'PASSWORD': '2008NeuDM',
         }
     }
 else:
