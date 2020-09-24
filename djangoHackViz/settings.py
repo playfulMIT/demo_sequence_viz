@@ -78,8 +78,8 @@ if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'dataviz',
-            'USER': 'liamhunt',
+            'NAME': 'postgres',
+            'USER': 'postgres',
             'PASSWORD': '2008NeuDM',
         }
     }

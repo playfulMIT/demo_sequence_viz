@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Levels of Activity</title>
+    <link rel="stylesheet" href="{% static 'bento.css' %}">
+</head>
+<body>
+<div class="flex-container">
+{% for k, v in persistenceOutput.items %}
+    <div class="bentoContainer">
+     {% for val in v %}
+
+        {% if forloop.last %}
+            <div class="bentoTitleRow">
+                <div class="bentoItem">
+                    <div class="student">Student {{ k }}</div>
+                </div>
+                <div class="bentoItem">
+                    <div class="compositeScore">{{ val.cum_avg_perc_composite }}</div>
+                </div>
+            </div>
+            <div class="bentoSubTitleRow">
+                <div class="bentoItem">
+                    <div class="persistence">{{ val.persistence }}</div>
+                </div>
+                    <div class="bentoItem">
+                        <div class="cumAvgPer">{{ val.cum_avg_persistence }}</div>
+                    </div>
+            </div>
+            <div class="bentoInside" id="inside{{ k }}">
+                <div class="bentoRow">
+                    <div class="bentoItem">
+                        <div class="bentoSubComp">
+                            <div class="bentoSubNumber">{{ val.active_time }}</div>
+                            <div class="bentoBarGraphBG">
+                                <div class="bentoBarGraph" id="{{ k }}{{ val.active_time }}" style="height: {{ val.percentileActiveTime}}%">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bentoItem">
+                        <div class="bentoSubComp">
+                            <div class="bentoSubNumber">{{ val.n_check_solution }}</div>
+                            <div class="bentoBarGraphBG">
+                                <div class="bentoBarGraph" id="{{ k }}{{ val.n_check_solution }}" style="height: {{ val.percentileAtt }}%">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bentoItem">
+                        <div class="bentoSubComp">
+                            <div class="bentoSubNumber">{{ val.n_events }}</div>
+                            <div class="bentoBarGraphBG">
+                                <div class="bentoBarGraph" id="{{ k }}{{ val.n_events }}" style="height: {{ val.percentileEvents }}%">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endif %}
+
+    {% endfor %}
+    <div class="digIN"><button type="button" onclick="hideShow('inside{{ k }}')">Dig In</button> </div>
+    </div>
+{% endfor %}
+</div>
+</body>
+<script type="text/javascript">
+function hideShow(id) {
+          var x = document.getElementById(id);
+          if (x.style.display === "none") {
+            x.style.display = "block";
+          } else {
+            x.style.display = "none";
+          }
+        }
+function hideAll(elemClass) {
+    var x = document.getElementsByClassName(elemClass);
+    for (var i =0; i<x.length; i++){
+        x[i].style.display = "none";
+    }
+}
+
+function computeGraphHeight(element, height) {
+    var x = document.getElementById(element);
+        x.style.height = height
+}
+
+document.onLoad = hideAll("bentoInside")
+
+</script>
+</html>

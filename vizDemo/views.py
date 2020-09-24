@@ -1,12 +1,13 @@
 from django.views.generic import FormView
 import requests
 from .models import CleanedEvent
-from .forms import SeqFilter, PlayerFilter
+from .forms import SeqFilter, PlayerFilter, PersistenceForm
 from bokeh.plotting import figure
 from bokeh.resources import CDN
 from bokeh.embed import components
 from bokeh.models import NumeralTickFormatter
 from bokeh.layouts import column
+from django.shortcuts import render
 
 
 def sequenceOfEvents(request):
@@ -228,3 +229,18 @@ class Seq(FormView):
 
         return context
 
+
+class Persistence(FormView):
+    template_name = 'vizDemo/persistence.html'
+    form_class = PersistenceForm
+
+    def get_context_data(self, **kwargs):
+        context = super(Persistence, self).get_context_data()
+        return context
+
+
+def bentoBox(request):
+    r = requests.get('http://104.248.237.179/api/dashboard/leja/persistence')
+    players = r.json()
+    print(players)
+    return render(request, 'vizDemo/bentoBox.html', {'persistenceOutput': players, })

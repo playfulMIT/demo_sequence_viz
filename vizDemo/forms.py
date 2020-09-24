@@ -25,5 +25,5 @@ class PlayerFilter(forms.ModelForm):
         fields = ['chooseUser']
 
 
-
-
+class PersistenceForm(forms.Form):
+    pass

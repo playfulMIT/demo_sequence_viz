@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="{% static "templateFunctions.js" %}"></script>
+    <meta charset="UTF-8">
+    <title>Persistence</title>
+    <style>
+        div {
+          line-height: 15px;
+          margin-bottom: 3px;
+          background-color: grey;
+          text-align: right;
+          padding-right: 5px;
+          font-size: 10px;
+          color: #cfcfcf;
+            }
+    </style>
+<script type="text/javascript">
+    d3.csv('{% static 'persistenceOutput.csv' %}').then(function (data) {
+    console.log(data)
+    d3.select("body")
+    .selectAll("div")
+    .data(data)
+    .enter()
+    .append("div")
+    .style("width", function(d) { return d.totalUserPersistence * 40 + "px"; })
+    .style("height", "15px");
+    });
+</script>
+</head>
+<body>
+
+<p>Hello</p>
+<div></div>
+</body>
+</html>
