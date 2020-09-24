@@ -243,4 +243,4 @@ def bentoBox(request):
     r = requests.get('http://104.248.237.179/api/dashboard/leja/persistence')
     players = r.json()
     print(players)
-    return render(request, 'vizDemo/bentoBox.html', {'persistenceOutput': players, })
+    return render(request, 'vizDemo/bentobox.html', {'persistenceOutput': players, })
