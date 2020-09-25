@@ -8,7 +8,7 @@
 .bentoContainer {
     display: flex;
     flex-direction: column;
-    width: 20%;
+    width: 340px;
     margin: 10pt auto;
     border: 8pt double #3f91f5;
     border-radius: 18px;
@@ -18,6 +18,36 @@
     position: relative;
     transition: transform .2s;
     box-shadow: 10pt 10pt rgba(1, 1, 1, .4);
+}
+
+h1 h2 {
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+
+}
+
+.bentoHead h1 {
+    font-size: 60pt;
+    color: #333333;
+    text-shadow: 3pt 3pt #f64139;
+    padding: 0;
+    margin: 0 auto;
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    text-align: center;
+}
+
+.bentoHead h2 {
+    font-size: 32pt;
+    color: #f64139;
+    padding: 0;
+    margin: 0 auto;
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    text-align: center;
+}
+
+.bentoHead {
+    width: 100%;
+    background-color: #f5bd5d;
+    margin: 0 auto 6pt;
 }
 
 .bentoContainer:hover {
@@ -63,14 +93,15 @@
 }
 
 .bentoInside .bentoItem {
-    width: 33%;
+
     background-color: white;
     color: #333333;
-    height: inherit;
+    height: fit-content;
+    margin: 2pt 3pt;
 }
 
 .bentoInside .bentoRow {
-    width: 68%;
+    width: 100%;
 }
 
 
@@ -79,11 +110,13 @@
 }
 
 .bentoSmItem {
-    flex: 1;
+    flex: 1 2 35%;
+    width: 32%;
+    margin: 2pt;
 }
 
 .bentoSmItem label {
-    font-size: .7rem;
+    font-size: .3rem;
     font-weight: lighter;
 }
 
@@ -125,20 +158,29 @@
     width: fit-content;
 }
 
+.bentoItem label {
+    position: absolute;
+    font: small-caption;
+    font-size: 7pt;
+}
+
 .bentoSubComp {
-    height: 90px;
+    height: 9em;
     display: flex;
     flex-direction: row;
+    width: 3em;
 }
 
 .bentoSubNumber {
-    width: 85%;
+    width: 80%;
+    font-size: 8pt;
+    z-index: 1;
 }
 
 .bentoBarGraphBG {
     height: 100%;
     background-color: #888888;
-    width: 15%;
+    width: 20%;
     position: relative;
 }
 
@@ -151,7 +193,7 @@
 }
 
 .digIN {
-    margin: 0 auto;
+    margin: 10pt auto;
 }
 
 .digIN button {
@@ -160,6 +202,8 @@
     bottom: 0;
     color: white;
     font-weight: 600;
+    right: 140px;
+    width: 4em;
 }
 
 .zoom {
@@ -170,9 +214,9 @@
   margin: 0 auto;
 }
 
-.zoom:hover {
-  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
-}
+/* .zoom:hover {
+  transform: scale(1.5);
+} */
 
 body {
     max-width: 100%;

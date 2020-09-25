@@ -80,7 +80,7 @@ if DEBUG:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'postgres',
             'USER': 'postgres',
-            'PASSWORD': '2008NeuDM',
+            'PASSWORD': 'postgres',
         }
     }
 else:

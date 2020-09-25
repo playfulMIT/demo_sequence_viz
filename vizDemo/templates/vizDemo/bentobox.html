@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Levels of Activity</title>
+    <title>Bento Boxes of Persistence</title>
     <link rel="stylesheet" href="{% static 'bento.css' %}">
 
     <script type="text/javascript">
@@ -31,6 +31,10 @@
 <script src="https://d3js.org/d3.v5.js"></script>
 </head>
 <body>
+<div class="bentoHead">
+    <h1>BentoBox's</h1>
+    <h2>of Persistence</h2>
+</div>
 <div class="flex-container">
 {% for k, v in persistenceOutput.items %}
     <div class="bentoContainer">
@@ -54,8 +58,11 @@
                 </div>
                     <div class="bentoItem">
                         <div class="cumAvgPer" id="cumAvg{{ k }}">
+
                             {{ val.cum_avg_persistence }}
+
                             <script type="text/javascript">
+
                             </script>
                         </div>
                     </div>
@@ -67,10 +74,16 @@
                             <div class="bentoSubComp">
                                 <div class="bentoSubNumber">{{ val.active_time }}</div>
                                 <div class="bentoBarGraphBG">
-                                    <div class="bentoBarGraph" id="{{ k }}{{ val.active_time }}" style="height: {{ val.percentileActiveTime}}%">
+                                    <div class="bentoBarGraph" id="{{ k }}{{ val.active_time }}" >
+                                        <script type="text/javascript">
+                                            computeGraphHeight('{{ k }}{{ val.active_time }}', '{{ val.percentileActiveTime}}%')
+                                        </script>
                                     </div>
+
                                 </div>
+
                             </div>
+                            <label>Active Time</label>
                         </div>
                         <div class="bentoItem">
                             <div class="bentoSubComp">
@@ -81,6 +94,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <label>Sub Att.</label>
                         </div>
                         <div class="bentoItem">
                             <div class="bentoSubComp">
@@ -88,8 +102,10 @@
                                 <div class="bentoBarGraphBG">
                                     <div class="bentoBarGraph" id="{{ k }}{{ val.n_events }}" style="height: {{ val.percentileEvents }}%">
                                     </div>
+
                                 </div>
                             </div>
+                            <label># Events</label>
                         </div>
 
                     </div>
