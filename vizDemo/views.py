@@ -8,6 +8,7 @@ from bokeh.embed import components
 from bokeh.models import NumeralTickFormatter
 from bokeh.layouts import column
 from django.shortcuts import render
+import json
 
 
 def sequenceOfEvents(request):
@@ -241,6 +242,9 @@ class Persistence(FormView):
 
 def bentoBox(request):
     r = requests.get('http://104.248.237.179/api/dashboard/leja/persistence')
+
     players = r.json()
-    print(players)
+    obj_str = json.dumps(players).replace('NON_PERSISTANT', 'Non Persistent').replace('PRODUCTIVE_PERSISTANCE', 'Prod. Persistence').replace('UNPRODUCTIVE_PERSISTANCE', 'Unprod. Persistence').replace('NO_BEHAVIOR', 'No Behavior').replace('RAPID_SOLVER', 'Rapid Solver')
+    players = json.loads(obj_str)
+    # print(players)
     return render(request, 'vizDemo/bentobox.html', {'persistenceOutput': players, })

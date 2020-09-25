@@ -10,12 +10,20 @@
     flex-direction: column;
     width: 20%;
     margin: 10pt auto;
-    border: 8pt solid #3FA9F5;
+    border: 8pt double #3f91f5;
     border-radius: 18px;
     background-color: #3FA9F5;
-    font-family: Oswald, serif;
-    height: 210px;
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    min-height: 210px;
     position: relative;
+    transition: transform .2s;
+    box-shadow: 10pt 10pt rgba(1, 1, 1, .4);
+}
+
+.bentoContainer:hover {
+    transform: scale(2);
+    box-shadow: 10pt 10pt 60px 30px rgba(1, 1, 1, .4);
+    z-index: 1;
 }
 
 .bentoRow {
@@ -23,12 +31,19 @@
     flex-direction: row;
 }
 
+.bentoColumn {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 .bentoTitleRow {
     display: flex;
     flex-direction: row;
     width: 100%;
     background: #FF1D25;
-    border-radius: 18px 18px 0 0;
+    border-radius: 16px 16px 0 0;
     color: white;
 }
 
@@ -43,6 +58,8 @@
 .bentoInside {
     width: 100%;
     margin-top: 4pt;
+    display: flex;
+    flex-direction: row;
 }
 
 .bentoInside .bentoItem {
@@ -61,17 +78,29 @@
     width: 50%;
 }
 
+.bentoSmItem {
+    flex: 1;
+}
+
+.bentoSmItem label {
+    font-size: .7rem;
+    font-weight: lighter;
+}
+
+.bentoSmItem .field {
+    background-color: white;
+    box-shadow: 1pt 1pt #333333;
+}
+
 
 .student {
     text-align: left;
-    font-family: Oswald, serif;
     font-weight: 600;
     size: 14pt;
 }
 
 .compositeScore {
     text-align: right;
-    font-family: Oswald, serif;
     font-weight: 600;
     size: 14pt;
 }
@@ -131,6 +160,18 @@
     bottom: 0;
     color: white;
     font-weight: 600;
+}
+
+.zoom {
+  padding: 50px;
+  transition: transform .2s; /* Animation */
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.zoom:hover {
+  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
 body {
