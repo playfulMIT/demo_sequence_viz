@@ -1,0 +1,140 @@
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+
+.bentoContainer {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    margin: 10pt auto;
+    border: 8pt solid #3FA9F5;
+    border-radius: 18px;
+    background-color: #3FA9F5;
+    font-family: Oswald, serif;
+    height: 210px;
+    position: relative;
+}
+
+.bentoRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.bentoTitleRow {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background: #FF1D25;
+    border-radius: 18px 18px 0 0;
+    color: white;
+}
+
+.bentoSubTitleRow {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    color: white;
+    border-bottom: 2px dashed #444444;
+}
+
+.bentoInside {
+    width: 100%;
+    margin-top: 4pt;
+}
+
+.bentoInside .bentoItem {
+    width: 33%;
+    background-color: white;
+    color: #333333;
+    height: inherit;
+}
+
+.bentoInside .bentoRow {
+    width: 68%;
+}
+
+
+.bentoTitleRow .bentoItem {
+    width: 50%;
+}
+
+
+.student {
+    text-align: left;
+    font-family: Oswald, serif;
+    font-weight: 600;
+    size: 14pt;
+}
+
+.compositeScore {
+    text-align: right;
+    font-family: Oswald, serif;
+    font-weight: 600;
+    size: 14pt;
+}
+
+.cumAvgPer {
+    font-size: 7pt;
+    font-weight: 200;
+    color: white;
+    text-align: right;
+}
+
+.persistence {
+    font-size: 10pt;
+    font-weight: 700;
+    color: white;
+    text-align: left;
+}
+
+.bentoItem {
+    align-items: end;
+    margin: 2pt 10pt 2pt;
+    width: fit-content;
+}
+
+.bentoSubComp {
+    height: 90px;
+    display: flex;
+    flex-direction: row;
+}
+
+.bentoSubNumber {
+    width: 85%;
+}
+
+.bentoBarGraphBG {
+    height: 100%;
+    background-color: #888888;
+    width: 15%;
+    position: relative;
+}
+
+.bentoBarGraph {
+    background-color: #ba2121;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    height: initial;
+}
+
+.digIN {
+    margin: 0 auto;
+}
+
+.digIN button {
+    position: absolute;
+    background-color: #333333;
+    bottom: 0;
+    color: white;
+    font-weight: 600;
+}
+
+body {
+    max-width: 100%;
+    margin: auto;
+}
+
