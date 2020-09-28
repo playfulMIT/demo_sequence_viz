@@ -143,6 +143,8 @@ h1 h2 {
     font-weight: 200;
     color: white;
     text-align: right;
+    display: flex;
+    flex-direction: column;
 }
 
 .persistence {
@@ -192,6 +194,8 @@ h1 h2 {
     height: initial;
 }
 
+
+
 .digIN {
     margin: 10pt auto;
 }
@@ -213,6 +217,41 @@ h1 h2 {
   height: 200px;
   margin: 0 auto;
 }
+
+.cumGraphContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.cumAvgGraph {
+    display: flex;
+    flex-direction: row;
+    width: 220px;
+    margin: 1px;
+}
+
+.cumAvgLabel {
+    width: 30%;
+    text-align: right;
+    font-size: 75%;
+    border-right: 1pt solid white;
+    margin-right: 2pt;
+}
+
+.cumAvgGraphBG {
+    position: relative;
+    width: 70%;
+    border-bottom: .5px solid #5f5f5f;
+    border-right: .5px solid #5f5f5f;
+}
+
+.cumAvgGraphBar {
+    position: absolute;
+    background-color: #cfcfcf;
+    font-size: 50%;
+
+}
+
 
 /* .zoom:hover {
   transform: scale(1.5);
