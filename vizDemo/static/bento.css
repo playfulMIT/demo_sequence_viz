@@ -252,6 +252,10 @@ h1 h2 {
 
 }
 
+#monsterMap {
+    margin: auto;
+    width: 100%;
+}
 
 /* .zoom:hover {
   transform: scale(1.5);

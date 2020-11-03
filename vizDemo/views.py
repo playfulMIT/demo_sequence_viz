@@ -248,3 +248,13 @@ def bentoBox(request):
     players = json.loads(obj_str)
     # print(players)
     return render(request, 'vizDemo/bentobox.html', {'persistenceOutput': players, })
+
+
+def monsterMap(request):
+    r = requests.get('http://104.248.237.179/api/dashboard/leja/persistence')
+
+    players = r.json()
+    obj_str = json.dumps(players).replace('NON_PERSISTANT', 'Non Persistent').replace('PRODUCTIVE_PERSISTANCE', 'Prod. Persistence').replace('UNPRODUCTIVE_PERSISTANCE', 'Unprod. Persistence').replace('NO_BEHAVIOR', 'No Behavior').replace('RAPID_SOLVER', 'Rapid Solver')
+    players = json.loads(obj_str)
+    # print(players)
+    return render(request, 'vizDemo/monstermap.html', {'persistenceOutput': players, })

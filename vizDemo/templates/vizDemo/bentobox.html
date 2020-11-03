@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load custom_tags %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -107,7 +108,10 @@
                         </div>
                         <div class="bentoItem">
                             <div class="bentoSubComp">
-                                <div class="bentoSubNumber">{{ val.cum_global_puzzle_attempts }}</div>
+                                <div class="bentoSubNumber">
+
+                                    {{ val.cum_global_puzzle_attempts }}
+                                </div>
                                 <div class="bentoBarGraphBG">
                                     <div class="bentoBarGraph" id="{{ k }}{{ val.n_check_solution }}" style="height: {{ val.percentileAtt }}%">
 

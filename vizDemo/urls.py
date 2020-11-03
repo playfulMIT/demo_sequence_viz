@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Seq, Persistence, bentoBox
+from .views import Seq, Persistence, bentoBox, monsterMap
 
 urlpatterns = [
     # path('rubrics', views.update_challenge, name='challenge-form'),
@@ -11,5 +11,6 @@ urlpatterns = [
     # path('edit/', views.edit, name='edit'),
     path('seq', Seq.as_view(), name='seq'),
     path('persistence', Persistence.as_view(), name='persistence'),
-    path('bentoBox', bentoBox, name='bentobox')
+    path('bentoBox', bentoBox, name='bentobox'),
+    path('monsterMap', monsterMap, name='monstermap')
 ]
