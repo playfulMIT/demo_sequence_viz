@@ -257,6 +257,48 @@ h1 h2 {
     width: 100%;
 }
 
+.scaleSVG {
+    transform: scale(1);
+    transform-origin: center;
+}
+
+.bigMbg {
+    fill: #ccc8c8;
+    stroke: #f64139;
+    stroke-width: 5;
+}
+
+.persBarLabel {
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 12pt;
+    color: #333333;
+    text-anchor: end;
+    dominant-baseline: central;
+}
+
+.persNum {
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 9pt;
+    fill: #333333;
+    text-anchor: start;
+    dominant-baseline: central;
+
+}
+
+.monsterHeader {
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 24pt;
+    font-weight: bold;
+    fill: #f64139;
+    text-anchor: middle;
+}
+
+.monsterLabel {
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 12pt;
+    color: #333333;
+}
+
 /* .zoom:hover {
   transform: scale(1.5);
 } */
