@@ -171,7 +171,7 @@ function makeMonster(key, fill) {
     return mSVG
 }
 
-let monsterDict = {
+let monsterDict2 = {
     1: "/static/monsters/asset 2.svg",
     2: "/static/monsters/asset 3.svg",
     3: "/static/monsters/asset 4.svg",
@@ -184,6 +184,21 @@ let monsterDict = {
     10: "/static/monsters/asset 11.svg",
     11: "/static/monsters/asset 12.svg",
     12: "/static/monsters/asset 13.svg",
+}
+
+ let monsterDict = {
+    1: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 2.svg",
+    2: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 3.svg",
+    3: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 4.svg",
+    4: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 5.svg",
+    5: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 6.svg",
+    6: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 7.svg",
+    7: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 8.svg",
+    8: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 9.svg",
+    9: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 10.svg",
+    10: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 11.svg",
+    11: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 12.svg",
+    12: "https://gbavizdemo.s3.amazonaws.com/SVG/asset 13.svg",
 }
 
 let monster7 = document.createElementNS(xmlns, "image")
