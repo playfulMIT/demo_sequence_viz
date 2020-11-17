@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Dosis|Oswald);
+
 .flex-container {
     display: flex;
     flex-direction: row;
@@ -296,7 +298,22 @@ h1 h2 {
 .monsterLabel {
     font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
     font-size: 12pt;
-    color: #333333;
+    fill: #333333;
+}
+
+.activeArc {
+    fill: #f5bd5d;
+    stroke: #f64139;
+}
+
+.totalArc {
+    fill: #f5bd5d;
+}
+
+.cumPerTitle {
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+    fill: #f64139;
+    font-size: 18pt;
 }
 
 /* .zoom:hover {

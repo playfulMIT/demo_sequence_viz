@@ -127,7 +127,7 @@ function placeMonsters(cumPersistence, key, data) {
         console.log("mountain " + "user " + key.toString())
     }
     monster.onclick = function () {
-        getContextData(key, data)
+        getContextData(key, data, cumPersistence)
     }
 }
 
@@ -208,12 +208,13 @@ monster7.setAttributeNS(null, "height", "50")
 monster7.setAttributeNS("http://www.w3.org/1999/xlink","href", "/static/monsters/asset 2.svg")
 //monster7.data = "/static/monsters/asset 2.svg"
 
-function getContextData(key, data) {
+function getContextData(key, data, cumPersistence) {
     let contextData = data.slice(-1)[0]
     let clicked = false
 
     let subArray = contextData[1]["cum_avg_persistence"]
-
+    let activeTime = contextData[1]["active_time"]
+    let totalTime = contextData[1]["percentileActiveTime"]
 
     let gParentSVG = document.getElementById("g" + key.toString())
     let monster = document.getElementById("monster" + key.toString())
@@ -248,11 +249,42 @@ function getContextData(key, data) {
         monsterLabel.setAttributeNS(null, "class", "monsterHeader")
         let monsterLabelText = document.createTextNode("Student " + key.toString())
         monsterLabel.appendChild(monsterLabelText)
+
+        let cumPer = document.createElementNS(xmlns, "text")
+        cumPer.setAttributeNS(null, "class", "cumPerTitle")
+        let cumPerLabelText = document.createTextNode("Total Persistence " + cumPersistence.toString())
+        cumPer.appendChild(cumPerLabelText)
+        cumPer.setAttributeNS(null, "x", "300")
+        cumPer.setAttributeNS(null, "y", "450")
+        cumPer.setAttributeNS(null, "height", "50")
+        cumPer.setAttributeNS(null, "width", "300")
+
         monsterLabel.setAttributeNS(null, "x", "300")
         monsterLabel.setAttributeNS(null, "y", "50")
         monsterLabel.setAttributeNS(null, "height", "50")
         monsterLabel.setAttributeNS(null, "width", "300")
         bigMContainer.appendChild(monsterLabel)
+
+        let activeTimeArc = document.createElementNS(xmlns, "circle")
+        activeTimeArc.setAttributeNS(null, "r", "50")
+        activeTimeArc.setAttributeNS(null, "cx", "500")
+        activeTimeArc.setAttributeNS(null, "cy", "75")
+        activeTimeArc.setAttributeNS(null, "class", "totalArc")
+
+        let activeTimeArc2 = document.createElementNS(xmlns, "circle")
+        activeTimeArc2.setAttributeNS(null, "r", "25")
+        activeTimeArc2.setAttributeNS(null, "cx", "500")
+        activeTimeArc2.setAttributeNS(null, "cy", "75")
+        activeTimeArc2.setAttributeNS(null, "class", "activeArc")
+        activeTimeArc2.setAttributeNS(null, "stroke-width", "50")
+        let strokeWidth = 2 * (Math.PI * activeTimeArc2.getAttributeNS(null, "r"))
+        console.log("StrokeWidth: " + strokeWidth.toString())
+        console.log("totalTime: " + totalTime.toString())
+        console.log("Calculated Stroke: " + (((totalTime * strokeWidth)/100)))
+        activeTimeArc2.setAttributeNS(null, "stroke-dasharray", ((totalTime * strokeWidth)/100).toString() + " " + strokeWidth.toString())
+        activeTimeArc2.setAttributeNS(null, "transform", "rotate(-90) translate(-575 425)")
+        //activeTimeVal =
+
 
         let persBarCont = document.createElementNS(xmlns, "svg")
         persBarCont.setAttributeNS(null, "x", "0")
@@ -261,9 +293,9 @@ function getContextData(key, data) {
         persBarCont.setAttributeNS(null, "height", "150")
         persBarCont.setAttributeNS(null, "fill", "white")
         bigMContainer.appendChild(persBarCont)
+        bigMContainer.appendChild(cumPer)
         let i = 1
         for (const[k,v] of Object.entries(subArray)) {
-            console.log(k, v)
             let persLabel = document.createElementNS(xmlns, "text")
                 persLabel.setAttributeNS(null, "class", "persBarLabel")
                 let persLabelText = document.createTextNode(k)
@@ -292,7 +324,8 @@ function getContextData(key, data) {
             persBarCont.appendChild(persNum)
             i++
         }
-
+        bigMContainer.appendChild(activeTimeArc)
+        bigMContainer.appendChild(activeTimeArc2)
         svgCont.appendChild(bigMContainer)
         bigMContainer.onclick = function () {
             bigMContainer.remove()
