@@ -314,6 +314,7 @@ h1 h2 {
     font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
     fill: #f64139;
     font-size: 18pt;
+    text-anchor: middle;
 }
 
 /* .zoom:hover {

@@ -252,7 +252,7 @@ function getContextData(key, data, cumPersistence) {
 
         let cumPer = document.createElementNS(xmlns, "text")
         cumPer.setAttributeNS(null, "class", "cumPerTitle")
-        let cumPerLabelText = document.createTextNode("Total Persistence " + cumPersistence.toString())
+        let cumPerLabelText = document.createTextNode("Total Persistence " + (cumPersistence.toFixed()).toString())
         cumPer.appendChild(cumPerLabelText)
         cumPer.setAttributeNS(null, "x", "300")
         cumPer.setAttributeNS(null, "y", "450")
@@ -334,7 +334,7 @@ function getContextData(key, data, cumPersistence) {
     }
     else {
         document.getElementById("bigM").remove()
-        getContextData(key, data)
+        getContextData(key, data, cumPersistence)
     }
 
     return contextData
