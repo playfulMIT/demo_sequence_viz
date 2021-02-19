@@ -137,16 +137,16 @@ function competency(data) {
     function scaler(){
         let avg = confidence/cI
         if (avg < .25) {
-            return .2
+            return .1
         }
         else if (avg >= .26 && avg < .5) {
-            return .4
+            return .25
         }
         else if (avg >= .5 && avg < .75){
             return .6
         }
         else if (avg >= .75) {
-            return .8
+            return 1
         }
     }
 
@@ -176,28 +176,41 @@ function competency(data) {
 
 
     placeCreature(totScore, data[key], scaler())
-    placeText(g, totScore, data[key]["totalComp"])
+    //placeText(g, totScore, data[key]["totalComp"])
 
   }
 }
 
+function onHover() {
+
+}
+
+function removeCards() {
+    //let cards = document.getElementsByClassName("card")
+    $('.card').remove()
+}
+
 function bigCreature(data, key) {
-
-
+    removeCards()
+    let y = 400
+    let x = 750
     let card = d3.select("svg")
         .append("g")
+        .attr("class", "card")
         .attr("id", key.toString())
+        .on("click", function () {
+            removeCards()
+        })
 
     let bg = card
     .append("rect")
         .attr("width", 400)
         .attr("height", 600)
-        .attr("x", 900)
+        .attr("x", 700)
         .attr("y", 200)
         .attr("fill", "#ebebeb")
 
-    let y = 400
-    let x = 950
+
     let width = 300
     let height = 60
     for (const[k ,v] of Object.entries(data['subScores'])) {
@@ -214,7 +227,7 @@ function bigCreature(data, key) {
             .text(k + ": " + perc.toString() + "%")
             .attr("fill", "black")
             .attr("font-size", "16pt")
-            .attr("x", x + 50)
+            .attr("x", x + 20)
             .attr("y",  y + 40)
 
               //.attr("mask", "url(#mask" + key.toString() + ")")
@@ -223,7 +236,7 @@ function bigCreature(data, key) {
     let clicked = true
     card.append("text")
         .text("Student " + key.toString().substring(0, 3))
-        .attr("x", 950)
+        .attr("x", x)
         .attr("y", 300)
         .attr("font-size", "24pt")
         .attr("fill", "gray")
@@ -231,15 +244,16 @@ function bigCreature(data, key) {
             .text("Total Competency: " + (data['totalComp'] * 100).toFixed() + "%")
         .attr("fill", "black")
             .attr("font-size", "16pt")
-            .attr("x", 950)
+            .attr("x", x)
             .attr("y",  350)
 
     card.append("text")
             .text("Total Persistence: " + data['per'].toFixed())
         .attr("fill", "black")
             .attr("font-size", "16pt")
-            .attr("x", 950)
+            .attr("x", x)
             .attr("y",  370)
+
 }
 
 function placeText(g, rect, data) {
@@ -263,22 +277,23 @@ function placeCreature(totRect, data, scale) {
 
     let perScore = data['per']
   if (perScore <= 47) {
-    let x = getRandom(beachBox.x, beachBox.width) - getRandom(-1, 1) * perScore
-    let y = getRandom(beachBox.y, beachBox.height) - getRandom(-1, 1) * perScore
+    let x = getRandom(beachBox.x, beachBox.width) + generateRandomInt(-1, 1) * perScore
+      console.log(generateRandomInt(-1, 1))
+    let y = getRandom(beachBox.y, beachBox.height) - generateRandomInt(-1, 1) * perScore
     totRect.attr("x", x * (scale + 1))
     totRect.attr("y", y * (scale + 1))
     totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
   }
   else if (perScore > 47 && perScore < 68) {
-    let x = getRandom(plainsBox.x, plainsBox.width) - getRandom(-1, 1) * perScore
-    let y = getRandom(plainsBox.y, plainsBox.height) - getRandom(-1, 1) * perScore
+    let x = getRandom(plainsBox.x, plainsBox.width) + generateRandomInt(-1, 1) * perScore
+    let y = getRandom(plainsBox.y, plainsBox.height) - generateRandomInt(-1, 1) * perScore
     totRect.attr("x", x * (scale + 1))
     totRect.attr("y", y * (scale + 1))
     totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
   }
   else if (perScore >= 68) {
-    let x = getRandom(mtnBox.x, mtnBox.width) - getRandom(-1, 1) * perScore
-    let y = getRandom(mtnBox.y, mtnBox.height) - getRandom(-1, 1) * perScore
+    let x = getRandom(mtnBox.x, mtnBox.width) + generateRandomInt(-1, 1) * perScore
+    let y = getRandom(mtnBox.y, mtnBox.height) - generateRandomInt(-1, 1) * perScore
     totRect.attr("x", x * (scale + 1))
     totRect.attr("y", y * (scale + 1))
     totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
@@ -307,4 +322,8 @@ function getRandom(min, max) {
     let value = Math.random() * (newMax - newMin) + newMin
     //console.log(value)
     return value
+}
+
+function filterUsers() {
+
 }

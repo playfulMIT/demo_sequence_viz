@@ -277,6 +277,7 @@ def competencyElo(request):
         if v['user'] in sortedPpl:
             sortedPpl[v['user']]['subScores'].update({v['kc']: v['final_kc_competency']})
             sortedPpl[v['user']]['confidence'].update({v['kc']: v['probability']})
+
         else:
             newPerson = {v['user']: {
                 'totalComp': v['final_global_competency'],
@@ -302,5 +303,5 @@ def competencyElo(request):
         if k in sortedPer:
             sortedPpl[k].update({'per': sortedPer[k]['per']})
             print(k)
-    total = dict(itertools.islice(sortedPpl.items(), 75))
+    total = dict(itertools.islice(sortedPpl.items(), 45))
     return render(request, 'vizDemo/competency.html', {'competency': total})
