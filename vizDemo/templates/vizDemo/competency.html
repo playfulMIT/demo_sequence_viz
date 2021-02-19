@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load static %}
+{% load custom_tags %}
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Competency Standards</title>
+    <link rel="stylesheet" href="{% static 'bento.css' %}">
+
+
+<script src="https://d3js.org/d3.v5.js"></script>
+</head>
+<body>
+<div class="bentoHead">
+    <h1>Competency Standards</h1>
+    <h2></h2>
+</div>
+<input type="button" onclick="sortMonster()" value="Sort by Persistence Type">
+    <div id="competencyMap">
+
+    </div>
+
+</body>
+<script type="text/javascript" src="{% static "competency.js" %}"></script>
+<script type="text/javascript">
+    document.onLoad = competency({{ competency | safe }})
+</script>
+
+</html>

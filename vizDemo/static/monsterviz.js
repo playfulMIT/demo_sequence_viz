@@ -73,13 +73,16 @@ function createMonsterMap(data) {
     for (const[key ,value] of Object.entries(data)) {
         let cumPers = 0
         let i = 0
+        let perLabel = ''
         for (const[k, v] of Object.entries(data[key])) {
+            perLabel = v["cum_persistence_label"]
             cumPers += v["cum_weighted_difficulty_perc_composite"]
             i++
         }
+
         cumPers = (cumPers/i)
         // console.log(key.toString() + " " + cumPers)
-        placeMonsters(cumPers, key, Object.entries(data[key]))
+        placeMonsters(cumPers, perLabel, key, Object.entries(data[key]))
     }
 
 }
@@ -90,7 +93,7 @@ function createMonsterMap(data) {
 // Moving on, receive the average of the persistence score per player
 // determine which quadrant this player goes in, and apply a CSS id
 // based on the received data array key
-function placeMonsters(cumPersistence, key, data) {
+function placeMonsters(cumPersistence, perLabel, key, data) {
 
     let beachBox = beach.getBBox()
     let plainsBox = plains.getBBox()
@@ -99,14 +102,15 @@ function placeMonsters(cumPersistence, key, data) {
     let monster = makeMonster(key, "pink")
     let x = 0
     let y = 0
-
+    monster.setAttributeNS(null, "class", "monsterSVG")
+    monster.setAttributeNS(null, "data-perlabel", perLabel)
     if (cumPersistence < 45) {
         x = getRandom(cumPersistence, beachBox.width) + beachBox.x - 150
         y = getRandom(cumPersistence, beachBox.height) + beachBox.y - 100
         monster.setAttributeNS(null, "x", x.toString())
         monster.setAttributeNS(null, "y", y.toString())
         beachSVG.appendChild(monster)
-        console.log("beach " + "user " + key.toString())
+        //console.log("beach " + "user " + key.toString())
     }
     else if(cumPersistence >= 45 && cumPersistence <= 70) {
         x = getRandom(cumPersistence, (plainsBox.width)) + plainsBox.x - 150
@@ -115,7 +119,7 @@ function placeMonsters(cumPersistence, key, data) {
         monster.setAttributeNS(null, "y", y.toString())
 
         plainsSVG.appendChild(monster)
-        console.log("plains " + "user " + key.toString())
+        //console.log("plains " + "user " + key.toString())
     }
     else if (cumPersistence > 70) {
         x = getRandom(cumPersistence, mountainBox.width) + mountainBox.x - 150
@@ -124,7 +128,7 @@ function placeMonsters(cumPersistence, key, data) {
         monster.setAttributeNS(null, "y", y.toString())
 
         mountainSVG.appendChild(monster)
-        console.log("mountain " + "user " + key.toString())
+        //console.log("mountain " + "user " + key.toString())
     }
     monster.onclick = function () {
         getContextData(key, data, cumPersistence)
@@ -139,7 +143,7 @@ function getRandom(min, max) {
     let newMin = Math.floor(min)
     let newMax = Math.ceil(max)
     let value = Math.random() * (newMax - newMin) + newMin
-    console.log(value)
+    //console.log(value)
     return value
 }
 
@@ -156,6 +160,7 @@ function makeMonster(key, fill) {
     monster.setAttributeNS(null, "href", monsterDict[imgLink])
     monster.setAttributeNS(null, "width", "25")
     monster.setAttributeNS(null, "height", "50")
+    monster.setAttribute("class", "monster")
     monster.id = "monster" + key.toString()
     let persLabel = document.createElementNS(xmlns, "text")
         persLabel.id = "compLabel" + key.toString()
@@ -215,6 +220,7 @@ function getContextData(key, data, cumPersistence) {
     let subArray = contextData[1]["cum_avg_persistence"]
     let activeTime = contextData[1]["active_time"]
     let totalTime = contextData[1]["percentileActiveTime"]
+
 
     let gParentSVG = document.getElementById("g" + key.toString())
     let monster = document.getElementById("monster" + key.toString())
@@ -278,9 +284,9 @@ function getContextData(key, data, cumPersistence) {
         activeTimeArc2.setAttributeNS(null, "class", "activeArc")
         activeTimeArc2.setAttributeNS(null, "stroke-width", "50")
         let strokeWidth = 2 * (Math.PI * activeTimeArc2.getAttributeNS(null, "r"))
-        console.log("StrokeWidth: " + strokeWidth.toString())
-        console.log("totalTime: " + totalTime.toString())
-        console.log("Calculated Stroke: " + (((totalTime * strokeWidth)/100)))
+        //console.log("StrokeWidth: " + strokeWidth.toString())
+        //console.log("totalTime: " + totalTime.toString())
+        //console.log("Calculated Stroke: " + (((totalTime * strokeWidth)/100)))
         activeTimeArc2.setAttributeNS(null, "stroke-dasharray", ((totalTime * strokeWidth)/100).toString() + " " + strokeWidth.toString())
         activeTimeArc2.setAttributeNS(null, "transform", "rotate(-90) translate(-575 425)")
         //activeTimeVal =
@@ -338,5 +344,36 @@ function getContextData(key, data, cumPersistence) {
     }
 
     return contextData
+}
 
+function addPastures() {
+    let topLeft = document.createElementNS(xmlns, "svg")
+    // let parent = document.getElementsByName("svg")
+    topLeft.setAttributeNS(null, "width", "400")
+    topLeft.setAttributeNS(null, "height", "400")
+    topLeft.setAttributeNS(null, "x", "0")
+    topLeft.setAttributeNS(null, "y", "0")
+    svgCont.appendChild(topLeft)
+}
+
+
+function sortMonster() {
+    addPastures()
+    let monsters = document.getElementsByClassName("monsterSVG")
+    let mapping = {"NO_BEHAVIOR": [600,20],
+        "NON_PERSISTANT ": [100,40],
+        "PRODUCTIVE_PERSISTANCE": [10,200],
+        "UNPRODUCTIVE_PERSISTANCE": [400,20],
+        "RAPID_SOLVER": [800,400],
+    }
+    let i = 0
+    for (i; i<monsters.length; i++) {
+        console.log(monsters[i].dataset.perlabel)
+        let x = mapping[monsters[i].dataset.perlabel][0] * getRandom(1, 1.5)
+        let y = mapping[monsters[i].dataset.perlabel][1] * getRandom(1, 1.5)
+        console.log(x)
+        monsters[i].setAttributeNS(null, "x", x.toString())
+        monsters[i].setAttributeNS(null, "y", y.toString())
+    }
+    console.log('sorting monsters')
 }

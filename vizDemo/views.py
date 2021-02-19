@@ -9,6 +9,9 @@ from bokeh.models import NumeralTickFormatter
 from bokeh.layouts import column
 from django.shortcuts import render
 import json
+import csv
+import pandas as pd
+import itertools
 
 
 def sequenceOfEvents(request):
@@ -258,3 +261,46 @@ def monsterMap(request):
     # players = json.loads(obj_str)
     # print(players)
     return render(request, 'vizDemo/monstermap.html', {'persistenceOutput': players, })
+
+
+def competencyElo(request):
+    # newDict = [json.dumps(d) for d in csv.DictReader(open('static/OutputCompetencyELO_normalized.csv'))]
+
+    data = pd.read_csv('static/StepByStepELOUpdates.csv').T.to_dict()
+    pData = pd.read_csv('static/persistenceByAttemptOutput.csv').T.to_dict()
+    # data2 = pd.read_csv('static/OutputCompetencyELO_normalized.csv')
+    # data2.to_json('static/elo.json')
+    # nData = json.dumps(data)
+    sortedPpl = {}
+    sortedPer = {}
+    for k, v in data.items():
+        if v['user'] in sortedPpl:
+            sortedPpl[v['user']]['subScores'].update({v['kc']: v['final_kc_competency']})
+            sortedPpl[v['user']]['confidence'].update({v['kc']: v['probability']})
+        else:
+            newPerson = {v['user']: {
+                'totalComp': v['final_global_competency'],
+                'subScores': {
+                    v['kc']: ['final_kc_competency']
+                },
+                'confidence': {
+                    v['kc']: v['probability']
+                }
+            }}
+            sortedPpl.update(newPerson)
+            # sortedPpl[v['user']].update({v['kc']: v['competency']})
+        # print(k, v['user'], v['kc'], v['competency'])
+    for k, v in pData.items():
+        if v['user'] in sortedPer:
+            sortedPer[v['user']].update({'per': v['cum_avg_perc_composite']})
+        else:
+            newPerson = {v['user']: {
+                'per': v['cum_avg_perc_composite']
+            }}
+            sortedPer.update(newPerson)
+    for k, v in sortedPpl.items():
+        if k in sortedPer:
+            sortedPpl[k].update({'per': sortedPer[k]['per']})
+            print(k)
+    total = dict(itertools.islice(sortedPpl.items(), 75))
+    return render(request, 'vizDemo/competency.html', {'competency': total})

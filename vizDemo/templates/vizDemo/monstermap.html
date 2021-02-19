@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load custom_tags %}
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Monster Map of Persistence</title>
@@ -41,6 +41,7 @@
     <h1>MonsterMap</h1>
     <h2>of Persistence</h2>
 </div>
+<input type="button" onclick="sortMonster()" value="Sort by Persistence Type">
     <div id="monsterMap">
 
         <object type="image/svg+xml" data="{% static "monsters/asset 2.svg" %}" width="50" height="50"> </object>
