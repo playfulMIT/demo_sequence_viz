@@ -328,5 +328,6 @@ h1 h2 {
 body {
     max-width: 100%;
     margin: auto;
+    font-family: Oswald, "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
 }
 

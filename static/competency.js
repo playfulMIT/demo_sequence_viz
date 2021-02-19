@@ -156,15 +156,20 @@ function competency(data) {
 
         //.attr("mask", "url(#" + key.toString() + ")")
     let totScore = g.append("rect")
-        .attr("width", radius * 4)
-        .attr("height", radius * 4)
+        .attr("width", (radius * 4) * scaler())
+        .attr("height", (radius * 4) )
         .attr("fill", function (){
             return totalCompFill(data[key]['totalComp'])
         })
         .on("click", function() {
             bigCreature(data[key], key)
         })
-        //.attr("fill-opacity", .5)
+        .on("mouseover", function() {
+            onHover(data[key], this)
+        })
+        .on("mouseout", function() {
+            $('.hoverBbl').remove()
+        })
         .attr("id", key.toString())
         .attr("mask", "url(#mask" + key.toString() + ")")
 
@@ -181,7 +186,27 @@ function competency(data) {
   }
 }
 
-function onHover() {
+function onHover(data, object) {
+    let x = object.getBBox().x
+    let y = object.getBBox().y
+
+    let hoverBubble = d3.select("svg")
+        .append("g")
+        .attr("class", "hoverBbl")
+
+    hoverBubble.append("circle")
+        .attr("r", 20)
+        .attr("cx", x)
+        .attr("cy", y)
+        .attr("fill", "pink")
+    hoverBubble.append("text")
+        .text((data['totalComp'] * 100).toFixed())
+        .attr("x", x)
+        .attr("y", y)
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "central")
+        .attr("fill", "#ec3670")
+        .attr("font-size", "16pt")
 
 }
 
@@ -192,7 +217,7 @@ function removeCards() {
 
 function bigCreature(data, key) {
     removeCards()
-    let y = 400
+    let y = 200
     let x = 750
     let card = d3.select("svg")
         .append("g")
@@ -207,7 +232,7 @@ function bigCreature(data, key) {
         .attr("width", 400)
         .attr("height", 600)
         .attr("x", 700)
-        .attr("y", 200)
+        .attr("y", 0)
         .attr("fill", "#ebebeb")
 
 
@@ -237,7 +262,7 @@ function bigCreature(data, key) {
     card.append("text")
         .text("Student " + key.toString().substring(0, 3))
         .attr("x", x)
-        .attr("y", 300)
+        .attr("y", 100)
         .attr("font-size", "24pt")
         .attr("fill", "gray")
     card.append("text")
@@ -245,14 +270,14 @@ function bigCreature(data, key) {
         .attr("fill", "black")
             .attr("font-size", "16pt")
             .attr("x", x)
-            .attr("y",  350)
+            .attr("y",  140)
 
     card.append("text")
             .text("Total Persistence: " + data['per'].toFixed())
         .attr("fill", "black")
             .attr("font-size", "16pt")
             .attr("x", x)
-            .attr("y",  370)
+            .attr("y",  160)
 
 }
 
@@ -312,6 +337,7 @@ function placeMask(rect, scale) {
         .attr("d", function (){
           return creatureRoulette[generateRandomInt(1, 5).toString()]
         })
+        .attr("stroke", "white")
         .attr("transform", "translate(" + x + "," + y + ")," + "scale(" + scale + ")")
     .attr("fill", "white")
 }
