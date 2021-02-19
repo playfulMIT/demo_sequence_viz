@@ -162,7 +162,7 @@ function competency(data) {
             return totalCompFill(data[key]['totalComp'])
         })
         .on("click", function() {
-            bigCreature(data[key], key)
+            bigCreature(data[key], key, this)
         })
         .on("mouseover", function() {
             onHover(data[key], this)
@@ -215,10 +215,10 @@ function removeCards() {
     $('.card').remove()
 }
 
-function bigCreature(data, key) {
+function bigCreature(data, key, object) {
     removeCards()
-    let y = 200
-    let x = 750
+    let y = object.getBBox().y
+    let x = object.getBBox().x
     let card = d3.select("svg")
         .append("g")
         .attr("class", "card")
@@ -231,20 +231,41 @@ function bigCreature(data, key) {
     .append("rect")
         .attr("width", 400)
         .attr("height", 600)
-        .attr("x", 700)
-        .attr("y", 0)
+        .attr("x", x)
+        .attr("y", y - 200)
         .attr("fill", "#ebebeb")
 
 
     let width = 300
     let height = 60
+
+    card.append("text")
+        .text("Student " + key.toString().substring(0, 3))
+        .attr("x", x + 30)
+        .attr("y", y - 100)
+        .attr("font-size", "24pt")
+        .attr("fill", "gray")
+    card.append("text")
+            .text("Total Competency: " + (data['totalComp'] * 100).toFixed() + "%")
+        .attr("fill", "black")
+            .attr("font-size", "16pt")
+            .attr("x", x + 30)
+            .attr("y",  y - 40)
+
+    card.append("text")
+            .text("Total Persistence: " + data['per'].toFixed())
+        .attr("fill", "black")
+            .attr("font-size", "16pt")
+            .attr("x", x + 30)
+            .attr("y",  y - 20)
+
     for (const[k ,v] of Object.entries(data['subScores'])) {
         let subG =  card.append("g")
             .append("rect")
               .attr("width", width)
               .attr("height", height)
              .attr("y", y)
-             .attr("x", x)
+             .attr("x", x + 50)
               .attr("fill", returnColor(k))
               .attr("fill-opacity", v)
         let perc = (v * 100).toFixed()
@@ -252,32 +273,12 @@ function bigCreature(data, key) {
             .text(k + ": " + perc.toString() + "%")
             .attr("fill", "black")
             .attr("font-size", "16pt")
-            .attr("x", x + 20)
+            .attr("x", x + 50)
             .attr("y",  y + 40)
 
               //.attr("mask", "url(#mask" + key.toString() + ")")
         y += height
     }
-    let clicked = true
-    card.append("text")
-        .text("Student " + key.toString().substring(0, 3))
-        .attr("x", x)
-        .attr("y", 100)
-        .attr("font-size", "24pt")
-        .attr("fill", "gray")
-    card.append("text")
-            .text("Total Competency: " + (data['totalComp'] * 100).toFixed() + "%")
-        .attr("fill", "black")
-            .attr("font-size", "16pt")
-            .attr("x", x)
-            .attr("y",  140)
-
-    card.append("text")
-            .text("Total Persistence: " + data['per'].toFixed())
-        .attr("fill", "black")
-            .attr("font-size", "16pt")
-            .attr("x", x)
-            .attr("y",  160)
 
 }
 
@@ -300,44 +301,54 @@ function placeCreature(totRect, data, scale) {
   let plainsBox = d3.select("#plains").node().getBBox()
   let mtnBox = d3.select("#mountain").node().getBBox()
 
-    let perScore = data['per']
-  if (perScore <= 47) {
-    let x = getRandom(beachBox.x, beachBox.width) + generateRandomInt(-1, 1) * perScore
-      console.log(generateRandomInt(-1, 1))
-    let y = getRandom(beachBox.y, beachBox.height) - generateRandomInt(-1, 1) * perScore
-    totRect.attr("x", x * (scale + 1))
-    totRect.attr("y", y * (scale + 1))
-    totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
-  }
-  else if (perScore > 47 && perScore < 68) {
-    let x = getRandom(plainsBox.x, plainsBox.width) + generateRandomInt(-1, 1) * perScore
-    let y = getRandom(plainsBox.y, plainsBox.height) - generateRandomInt(-1, 1) * perScore
-    totRect.attr("x", x * (scale + 1))
-    totRect.attr("y", y * (scale + 1))
-    totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
-  }
-  else if (perScore >= 68) {
-    let x = getRandom(mtnBox.x, mtnBox.width) + generateRandomInt(-1, 1) * perScore
-    let y = getRandom(mtnBox.y, mtnBox.height) - generateRandomInt(-1, 1) * perScore
-    totRect.attr("x", x * (scale + 1))
-    totRect.attr("y", y * (scale + 1))
-    totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
-      totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")")
-  }
+    // modify this so that the placement is more like a linear formula
+    // place the monsters with an awareness of those around them, array
+    // of placements sort of like a bullet tracker in unity?
+    // sort them prior to placement as well so that it's more predictable
+    // where they end up
+        let perScore = data['per']
+
+    // could be a switch statement
+      if (perScore <= 47) {
+        let x = getRandom(beachBox.x, beachBox.width) + generateRandomInt(-1, 1) * perScore
+          console.log(generateRandomInt(-1, 1))
+        let y = getRandom(beachBox.y, beachBox.height) - generateRandomInt(-1, 1) * perScore
+        totRect.attr("x", x * (scale + 1))
+        totRect.attr("y", y * (scale + 1))
+        totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
+      }
+      else if (perScore > 47 && perScore < 68) {
+        let x = getRandom(plainsBox.x, plainsBox.width) + generateRandomInt(-1, 1) * perScore
+        let y = getRandom(plainsBox.y, plainsBox.height) - generateRandomInt(-1, 1) * perScore
+        totRect.attr("x", x * (scale + 1))
+        totRect.attr("y", y * (scale + 1))
+        totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
+      }
+      else if (perScore >= 68) {
+        let x = getRandom(mtnBox.x, mtnBox.width) + generateRandomInt(-1, 1) * perScore
+        let y = getRandom(mtnBox.y, mtnBox.height) - generateRandomInt(-1, 1) * perScore
+        totRect.attr("x", x * (scale + 1))
+        totRect.attr("y", y * (scale + 1))
+        totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
+          totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")")
+      }
+
     placeText(totRect.select(this.parentNode), totRect, data["totalComp"])
-    placeMask(totRect, scale)
+    placeMask(totRect, scale, data['creature'])
 }
 
-function placeMask(rect, scale) {
+// extend this so I can use it to call for a mask on the large creature cards
+//
+function placeMask(rect, scale, maskIndex) {
     let x = rect.node().getBBox().x
     let y = rect.node().getBBox().y
     let mask = d3.select("svg").append("mask")
         .attr("id", "mask" + rect.attr("id"))
         .append("path")
         .attr("d", function (){
-          return creatureRoulette[generateRandomInt(1, 5).toString()]
+          return creatureRoulette[maskIndex]
         })
-        .attr("stroke", "white")
+        .attr("stroke", "black")
         .attr("transform", "translate(" + x + "," + y + ")," + "scale(" + scale + ")")
     .attr("fill", "white")
 }

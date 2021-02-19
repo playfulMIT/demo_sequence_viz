@@ -12,6 +12,7 @@ import json
 import csv
 import pandas as pd
 import itertools
+import random
 
 
 def sequenceOfEvents(request):
@@ -273,6 +274,10 @@ def competencyElo(request):
     # nData = json.dumps(data)
     sortedPpl = {}
     sortedPer = {}
+
+    # setting the creature index for front end dict in the view so it persists
+    # throughout the spaghetti function calls...
+    creatureSeed = random.randrange(0, 4, 1)
     for k, v in data.items():
         if v['user'] in sortedPpl:
             sortedPpl[v['user']]['subScores'].update({v['kc']: v['final_kc_competency']})
@@ -286,7 +291,9 @@ def competencyElo(request):
                 },
                 'confidence': {
                     v['kc']: v['probability']
-                }
+                },
+                'creature': creatureSeed
+
             }}
             sortedPpl.update(newPerson)
             # sortedPpl[v['user']].update({v['kc']: v['competency']})
