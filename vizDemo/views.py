@@ -277,8 +277,10 @@ def competencyElo(request):
 
     # setting the creature index for front end dict in the view so it persists
     # throughout the spaghetti function calls...
-    creatureSeed = random.randrange(0, 4, 1)
+
     for k, v in data.items():
+        creatureSeed = random.randrange(0, 5, 1)
+        print(creatureSeed)
         if v['user'] in sortedPpl:
             sortedPpl[v['user']]['subScores'].update({v['kc']: v['final_kc_competency']})
             sortedPpl[v['user']]['confidence'].update({v['kc']: v['probability']})
@@ -310,5 +312,5 @@ def competencyElo(request):
         if k in sortedPer:
             sortedPpl[k].update({'per': sortedPer[k]['per']})
             print(k)
-    total = dict(itertools.islice(sortedPpl.items(), 45))
+    total = dict(itertools.islice(sortedPpl.items(), 60))
     return render(request, 'vizDemo/competency.html', {'competency': total})
