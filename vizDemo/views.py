@@ -269,6 +269,7 @@ def competencyElo(request):
 
     data = pd.read_csv('static/StepByStepELOUpdates.csv').T.to_dict()
     pData = pd.read_csv('static/persistenceByAttemptOutput.csv').T.to_dict()
+
     # data2 = pd.read_csv('static/OutputCompetencyELO_normalized.csv')
     # data2.to_json('static/elo.json')
     # nData = json.dumps(data)

@@ -62,14 +62,14 @@ let creatureRoulette = {
   3: creature4,
   4: creature5
 }
-
+let widthIncrementor
 function returnColor(key) {
 
   let colorMap = {
-    "GMD.4": "#633f91",
-    "CO.5": "#00ff00",
-    "CO.6": "#81e5ff",
-    "MG.1": "#ec3670"
+    "GMD.4": "#FFBE0B",
+    "CO.5": "#FB5607",
+    "CO.6": "#463730",
+    "MG.1": "#7ADFBB"
   }
 
   return colorMap[key]
@@ -121,7 +121,8 @@ function competency(data) {
     plains.attr("transform", "translate(" + ((browserWidth/2) - 200) + "," + ((browserHeight/2) - 300) + ")")
     mountain.attr("transform", "translate(" + (browserWidth - 500) + "," + (browserHeight - browserHeight) + ")")
     beach.attr("transform", "translate(" + ((browserWidth - browserWidth) + 50) + "," + ((browserHeight/2) - 100) + ")")
-
+    widthIncrementor = browserWidth/Object.keys(data).length
+    console.log(widthIncrementor)
   let radius = 25
   for (const[key] of Object.entries(data)) {
     let confidence = 0
@@ -177,7 +178,7 @@ function competency(data) {
 
 
 
-    placeCreature(totScore, data[key], scaler())
+    placeCreature(totScore, data[key], scaler(), g)
     //placeText(g, totScore, data[key]["totalComp"])
 
   }
@@ -196,6 +197,7 @@ function onHover(data, object) {
         .attr("cx", x)
         .attr("cy", y)
         .attr("fill", "pink")
+        .attr("pointer-events", "none")
     hoverBubble.append("text")
         .text((data['totalComp'] * 100).toFixed())
         .attr("x", x)
@@ -215,6 +217,11 @@ function removeCards() {
 function bigCreature(data, key, object) {
     removeCards()
     let y = object.getBBox().y
+    if (y < (browserHeight * .2)) {
+        y = 300
+    }
+
+
     let x = object.getBBox().x
     let card = d3.select("svg")
         .append("g")
@@ -294,60 +301,82 @@ function placeText(g, rect, data) {
             })
 }
 
-function placeCreature(totRect, data, scale) {
+let shit = 1
+
+function placeCreature(totRect, data, scale, g) {
   let beachBox = d3.select("#beach").node().getBoundingClientRect()
   let plainsBox = d3.select("#plains").node().getBoundingClientRect()
   let mtnBox = d3.select("#mountain").node().getBoundingClientRect()
-    console.log("BeachBox x " + beachBox.x + ", BeachBox Width" + beachBox.width
-    + ", BeachBox y + " + beachBox.y + ", BeachBox Height " + beachBox.height)
-
-    console.log("Plains x " + plainsBox.x + ", Plains Width" + plainsBox.width
-    + ", Plains y + " + plainsBox.y + ", Plains Height " + plainsBox.height)
-
-    console.log("Mtn x " + mtnBox.x + ", Mtn Width" + mtnBox.width
-    + ", Mtn y + " + mtnBox.y + ", Mtn Height " + mtnBox.height)
+    let x = 0
+    let y = 0
     // modify this so that the placement is more like a linear formula
     // place the monsters with an awareness of those around them, array
     // of placements sort of like a bullet tracker in unity?
     // sort them prior to placement as well so that it's more predictable
     // where they end up
         let perScore = data['per']
-
+        let outlier = null
+        let tempInt = 0
     // could be a switch statement
       if (perScore <= 47) {
 
-        let x = getRandom(beachBox.x, (beachBox.x + beachBox.width))
-        let y = getRandom(beachBox.y, (beachBox.y - beachBox.height)) - beachBox.height/2
+            x = getRandom(beachBox.x, (beachBox.x + beachBox.width))
+            y = getRandom(beachBox.y, (beachBox.y - beachBox.height)) - beachBox.height/2
+          //let x = beachBox.x + perScore
+          //let y = (beachBox.height * data['compTotal']) + beachBox.x
         totRect.attr("x", x)
         totRect.attr("y", y)
         totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
       }
       else if (perScore > 47 && perScore < 68) {
-        let x = getRandom(plainsBox.x, (plainsBox.x + plainsBox.width))
-        let y = getRandom(plainsBox.y, (plainsBox.y + plainsBox.height)) - plainsBox.height
-          console.log(x)
+
+        //let x = plainsBox.x + perScore
+          //let y = (plainsBox.height * data['totalComp']) + plainsBox.y
+        x = getRandom(plainsBox.x, (plainsBox.x + plainsBox.width))
+        y = getRandom(plainsBox.y, (plainsBox.y + plainsBox.height)) - plainsBox.height
+
         totRect.attr("x", x )
         totRect.attr("y", y)
         totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
+          shit = shit + 10
       }
       else if (perScore >= 68) {
-        let x = getRandom(mtnBox.x, (mtnBox.x + mtnBox.width))
-        let y = getRandom(mtnBox.y, (mtnBox.y - mtnBox.height)) + mtnBox.height/3
+        x = getRandom(mtnBox.x, (mtnBox.x + mtnBox.width))
+        y = getRandom(mtnBox.y, (mtnBox.y - mtnBox.height)) + mtnBox.height/3
         totRect.attr("x", x)
         totRect.attr("y", y)
         totRect.select(this.parentNode).attr("transform", "scale(" + scale + ")," + "translate(" + x + "," + y + ")")
 
       }
+        let totRectBBC = totRect.node().getBoundingClientRect()
 
+      for (const[k, v] of Object.entries(data['subScores'])) {
+
+          if (Math.abs(data['totalComp'] - v)/v > .25) {
+              if (v > tempInt) {
+                  tempInt = v
+                  console.log(k + " subScore " + v.toString() + " totalComp " + data['totalComp'])
+                    outlier = k
+              }
+
+          }
+      }
+
+
+    //console.log(widthIncrementor)
     placeText(totRect.select(this.parentNode), totRect, data["totalComp"])
-    placeMask(totRect, scale, data['creature'])
+    placeMask(totRect, scale, data['creature'], outlier)
 }
 
 // extend this so I can use it to call for a mask on the large creature cards
 //
-function placeMask(rect, scale, maskIndex) {
+function placeMask(rect, scale, maskIndex, outlier) {
     let x = rect.node().getBBox().x
     let y = rect.node().getBBox().y
+    let strokeColor = "gray"
+    if (outlier) {
+       strokeColor = returnColor(outlier)
+    }
     let mask = d3.select("svg").append("mask")
         .attr("id", "mask" + rect.attr("id"))
         .append("path")
@@ -362,7 +391,13 @@ function placeMask(rect, scale, maskIndex) {
         .attr("d", function (){
           return creatureRoulette[maskIndex]
         })
-        .attr("stroke", "black")
+        .attr("stroke", strokeColor)
+        .attr("stroke-width", function () {
+            if (outlier) {
+                return 10
+            }
+            return 2
+        })
         .attr("fill", "none")
         .attr("transform", "translate(" + x + "," + y + ")," + "scale(" + scale + ")")
 
