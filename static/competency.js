@@ -217,12 +217,17 @@ function removeCards() {
 function bigCreature(data, key, object) {
     removeCards()
     let y = object.getBBox().y
+    let x = object.getBBox().x
     if (y < (browserHeight * .2)) {
         y = 300
     }
+    if (x + 400 > (browserWidth * .85)){
+        x = browserWidth - 400
+    }
 
 
-    let x = object.getBBox().x
+
+
     let card = d3.select("svg")
         .append("g")
         .attr("class", "card")
@@ -242,7 +247,7 @@ function bigCreature(data, key, object) {
 
     let width = 300
     let height = 60
-
+    let radius = 20
     card.append("text")
         .text("Student " + key.toString().substring(0, 3))
         .attr("x", x + 30)
@@ -255,7 +260,19 @@ function bigCreature(data, key, object) {
             .attr("font-size", "16pt")
             .attr("x", x + 30)
             .attr("y",  y - 40)
-
+    card.append("circle")
+        .attr("cx", x + (400 - (radius * 2)))
+        .attr("cy", y - 160)
+        .attr("r", radius)
+        .attr("fill", "#E63946")
+    card.append("text")
+        .text("X")
+        .attr("x", x + (400 - (radius * 2)))
+        .attr("y", y - 150)
+        .attr("font-size", 20)
+        .attr("fill", "white")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "center")
     card.append("text")
             .text("Total Persistence: " + data['per'].toFixed())
         .attr("fill", "black")
@@ -385,7 +402,6 @@ function placeMask(rect, scale, maskIndex, outlier) {
         .attr("d", function (){
           return creatureRoulette[maskIndex]
         })
-        .attr("stroke", "black")
         .attr("transform", "translate(" + x + "," + y + ")," + "scale(" + scale + ")")
     .attr("fill", "white")
     let stroke = d3.select("svg").append("path")
