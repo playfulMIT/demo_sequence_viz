@@ -315,3 +315,11 @@ def competencyElo(request):
             print(k)
     total = dict(itertools.islice(sortedPpl.items(), 60))
     return render(request, 'vizDemo/competency.html', {'competency': total})
+
+
+def portalPersistence(request):
+    r = requests.get('http://104.248.237.179/api/dashboard/leja/persistence')
+
+    players = r.json()
+
+    return render(request, 'vizDemo/portalpersistence.html', {'persistenceOutput': players, })

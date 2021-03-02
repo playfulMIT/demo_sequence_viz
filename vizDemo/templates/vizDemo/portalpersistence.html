@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load static %}
+{% load custom_tags %}
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Monster Map of Persistence</title>
+    <link rel="stylesheet" href="{% static 'bento.css' %}">
+
+    <script type="text/javascript">
+        function hideShow(id) {
+                  var x = document.getElementById(id);
+                  if (x.style.display === "none") {
+                    x.style.display = "inherit";
+                  } else {
+                    x.style.display = "none";
+                  }
+                  console.log(id)
+                }
+        function hideAll(elemClass) {
+            var x = document.getElementsByClassName(elemClass);
+            for (var i =0; i<x.length; i++){
+                x[i].style.display = "none";
+            }
+        }
+
+        function computeGraphHeight(element, height) {
+            var x = document.getElementById(element);
+                x.style.height = height
+        }
+
+        function computeGraphWidth(element, width) {
+            var x = document.getElementById(element)
+            x.style.width = width
+        }
+</script>
+<script src="https://d3js.org/d3.v5.js"></script>
+</head>
+<body>
+
+
+    <div id="monsterMap">
+
+
+
+    </div>
+
+</body>
+<script type="text/javascript" src="{% static "monsterviz.js" %}"></script>
+<script type="text/javascript">
+        document.onLoad = portalPersistence({{ persistenceOutput | safe }})
+
+</script>
+</html>
