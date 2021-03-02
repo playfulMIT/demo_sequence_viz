@@ -177,10 +177,10 @@ function makeMonster(key, fill) {
 }
 
 let monsterDict2 = {
-    1: "/static/monsters/asset 2.svg",
-    2: "/static/monsters/asset 3.svg",
-    3: "/static/monsters/asset 4.svg",
-    4: "/static/monsters/asset 5.svg",
+    1: "/static/monsters/creature1.svg",
+    2: "/static/monsters/creature2.svg",
+    3: "/static/monsters/creature3.svg",
+    4: "/static/monsters/creature4.svg",
     5: "/static/monsters/asset 6.svg",
     6: "/static/monsters/asset 7.svg",
     7: "/static/monsters/asset 8.svg",
@@ -435,7 +435,7 @@ function portalPersistence(data) {
             .append("image")
             .attr('xlink:href', function ()
             {
-                return monsterDict[getRandom(1, 12).toFixed()]
+                return monsterDict2[getRandom(1, 4).toFixed()]
             })
             .attr("width", 25)
             .attr("height", 25)
